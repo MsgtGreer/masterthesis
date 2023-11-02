@@ -1,0 +1,26 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\babel@toc {UKenglish}{}
+\babel@toc {ngerman}{}
+\babel@toc {UKenglish}{}
+\babel@toc {UKenglish}{}
+\babel@toc {UKenglish}{}
+\babel@toc {ngerman}{}
+\babel@toc {UKenglish}{}
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces Different junction Seebeck coefficients. From \cite {lowlvl}, modified.\relax }}{15}{table.caption.41}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Modes of the different \ac {pAM}, the range is given by $\frac {\text {\SI {2.048}{\volt }}}{1.25\text {R}_\text {S}}$. This sets the resolution to range divided by $2^{15}$. Translated and modified from \cite {rudolph}.\relax }}{26}{table.caption.62}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Current draw of a \ac {pAM}. From \cite {rudolph}, modified.\relax }}{27}{table.caption.63}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Registers, their purpose and ports that feature them. Only ports 1 and 2 have interrupt capability \cite {msp_manual}.\relax }}{29}{table.caption.66}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Characteristics of different \acp {opamp}. The AD549L is used in the older \ac {pAM} designs; the OPA128 is its successor. The LMC6442 is used by \cite {zagreb}.\relax }}{50}{table.caption.93}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Input current ranges and achievable resolution for different feedback resistors $R_\text {F}$, with a \SI {\pm 5}{\volt } output range and an \ac {adc} input range of \SI {\pm 6.25}{\volt } digitised in 15-bits.\relax }}{52}{table.caption.100}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Pin configuration of the LTC2327 \cite {LTC2327}.\relax }}{58}{table.caption.110}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces Temperature dependencies of components in the front-end.\relax }}{62}{table.caption.118}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Current draw of the \ac {pAM} prototype. For the measurement, a \SI {10}{\ohm } resistor was inserted in the \SI {+9}{\volt } supply line, and the voltage drop was measured using an Oscilloscope.\relax }}{63}{table.caption.123}%
+\contentsline {table}{\numberline {5.6}{\ignorespaces Comparison of a \SI {9}{volt}-block battery with a lithium-based accumulator.\relax }}{66}{table.caption.124}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }

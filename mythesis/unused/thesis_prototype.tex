@@ -1,0 +1,66 @@
+% !TEX root = mythesis.tex
+% !TeX spellcheck = en_GB
+%==============================================================================
+\chapter{Prototype design}
+\label{sec:prototype}
+%==============================================================================
+It comes in a 8 lead smd package, as depicted in figure \ref{fig:ADA4530}. The pin out is optimized for guarding the input pins. 
+\begin{figure}
+	\centering
+	\includegraphics[width=.6\textwidth]{spacer.jpg}
+	\caption{Pin configuration of the ADA5430\cite{ADA4530}}
+	\label{fig:ADA4530}
+\end{figure}
+
+The pinout of the adc is depicted in figure \ref{fig:ltc2327:pinout}, the pins purpose can be found in figure \ref{fig:ltc2327:pinout}.
+\begin{minipage}{\textwidth}
+	\centering
+	\begin{minipage}{0.29\textwidth}
+		\includegraphics[width=\textwidth]{spacer.jpg}
+		\captionof{figure}{Pin configuration of the LTC2327\cite{LTC2327}}
+		\label{fig:ltc2327:pinout}
+	\end{minipage}\begin{minipage}{0.7\textwidth}
+		\begin{tabular}{lll}
+			\hline
+			PIN & name & purpose\\\hline
+			1 	& V$_\text{DDLBYP}$ & Supply bypass pin \\
+			2   & V$_\text{DD}$     & Power supply pin\\
+			3,6,16 & GND & Ground\\
+			4      & IN+ & Signal input\\
+			5      & IN- & analog ground sense\\
+			7      & REFBUF & buffer output\\
+			8      & REFIN & external reference input\\
+			9      & CNV & Trigger convert\\		
+			10      & CHAIN & -\\
+			11      & BUSY & -\\
+			12      & RDL/SDI & -\\
+			13      & SCK & Clock input\\
+			14      & SDO & Data output\\
+			15      & OV$_\text{DD}$ & Logick voltage level input\\\hline
+		\end{tabular}
+		\captionof{table}{Pin configuration of the LTC2327\cite{LTC2327}}
+		\label{tab:ltc2327:pinout}
+	\end{minipage}
+\end{minipage}
+The LTC2327 can be configured to operate with different input voltage ranges, depending on the voltage on the reference buffer pins according to table \ref{tab:ltc2327:input}
+\begin{table}
+	\centering
+	\begin{tabular}{ccc}\hline
+		\multicolumn{3}{c}{Normal operation}\\\hline
+		REFIN & REFBUF & Input range \\
+		\SI{2.048}{\volt} & \SI{4.096}{\volt} & \SI{\pm10.24}{\volt}\\
+		&&\\
+		\multicolumn{3}{c}{Override REFIN}\\\hline
+		REFIN & REFBUF & Input range \\
+		\SI{1.25}{\volt} & \SI{2.5}{\volt} & \SI{\pm6.25}{\volt}\\
+		\SI{2.048}{\volt} & \SI{4.096}{\volt} & \SI{\pm10.24}{\volt}\\
+		\SI{2.4}{\volt} & \SI{4.8}{\volt} & \SI{\pm12}{\volt}\\
+		&&\\
+		\multicolumn{3}{c}{Override REFBUF}\\\hline
+		REFIN & REFBUF & Input range \\
+		\SI{0}{\volt} & \SI{2.5}{\volt} & \SI{\pm6.25}{\volt}\\
+		\SI{0}{\volt} & \SI{5}{\volt} & \SI{\pm12.5}{\volt}\\\hline
+	\end{tabular}
+	\caption{Differential input range of the LTC2327 depending on the reference pins}
+	\label{tab:ltc2327:input}
+\end{table}

@@ -1,0 +1,106 @@
+% !TEX root = mythesis.tex
+% !TeX spellcheck = en_GB
+%------------------------------------------------------------------------------
+\chapter{Appendix}
+\label{sec:app}
+%------------------------------------------------------------------------------
+\section{Picoamperemeter Revision Three }
+\label{sec:rev3}
+The revision 3 schematics can be found in figures \ref{fig:rev3:schematics:backend} and \ref{fig:rev3:schematics:frontend}. The PCB layout is shown in figure \ref{fig:rev3:pcb}.
+\begin{figure}
+	\centering
+	\includegraphics[angle=90,width=0.9\textwidth,page=1]{../../../Figures/Rev3/Job1.pdf}
+	\caption{Schematics for the back-end of the revision 3 \ac{pAM}.}
+	\label{fig:rev3:schematics:backend}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[angle=90,width=0.9\textwidth,page=1]{../../../Figures/Rev3/Job1.pdf}
+	\caption{Schematics for the front-end of the revision 3 \ac{pAM}. The attachment, with the SA5.0CA diode and the \SI{20}{\kilo\ohm} resistor, is not depicted here as it is not part of the original design.}
+	\label{fig:rev3:schematics:frontend}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[angle=90,width=0.9\textwidth,page=3]{../../../Figures/Rev3/Job1.pdf}
+	\caption{PCB layout of the revision 3 \ac{pAM}.}
+	\label{fig:rev3:pcb}
+\end{figure}
+\section{The Calibration Station}
+The calibration process for the \ac{pAM} was developed by \cite{roedel}. However, during work on this thesis, the station underwent a complete hardware failure. Restoring the whole setup was therefore necessary. The principle of the station is shown in figure \ref{fig:appendix:calib:setup}.
+
+Figure \ref{fig:appendix:calib:chimney} shows the chimney of the calibration station. The funnel section was previously mounted to the metal chimney using duct tape. As duct tape did not provide a stable connection, it was replaced by metal rods.\\
+ The joint between funnel and the cooler section was held together by hot glue. During operation this joint broke, leading to a collapse of the cooler chimney. The hot glue joint was, therefore, replaced with Araldite, which should result in more long-term stability.
+The collapse also damaged the plastic fan mounting of the top fan. Due to time constraints, the replacement could only be built from metal, resulting in a small heat-bridge between the top and bottom side of the Peltier elements. If the heat-bridge proves to be a problem, it should be replaced in the future.
+
+The collapse must have caused a power spike in the circuitry, for unknown reasons. After the collapse, the relays for switching the Peltier elements, and the Peltier elements themselves were destroyed and needed to be replaced.
+The power board that connects the Arduino with the external setup was destroyed as well. A new board was designed. In the process, an electromagnet was added to the setup. The magnet can be controlled with a switch or from the Arduino, allowing to switch the \ac{pAM} under test using the CalibAna software\footnote{An interesting remark: To support the electromagnet, the Companduino software, controlling the Arduino, was modified. During the modification process it was found, that elongating the software any further would cause it to stop working. Probably the memory that is left on the Arduino is necessary to perform calculations during runtime.}.
+Figure \ref{fig:appendix:calib:schematic} shows the circuitry that is controlled by the Arduino.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\textwidth,page=4]{../../../Figures/CalibrationStation/CalibrationSetup.png}
+	\caption{Principle of the calibration station as designed by \cite{roedel}. From \cite{roedel_talk}.}
+	\label{fig:appendix:calib:setup}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.3\textwidth,page=4]{../../../Figures/CalibrationStation/CalibrationSetup_chimney.png}
+	\caption{The chimney section of the Calibrations station. On the bottom the metal chimney to guide cables and the ventilation hose into the faraday box; above this, the funnel connecting the hose to the cooler section; on top the fan for cooling the Peltier elements.}
+	\label{fig:appendix:calib:chimney}
+\end{figure}\\
+\begin{figure}
+	\centering
+	\includegraphics[angle=90,width=0.9\textwidth,page=4]{../../../Figures/CalibrationStation/Schematic_CalibrationStation.png}
+	\caption{Schematic of the Calibration station after restoration.}
+	\label{fig:appendix:calib:schematic}
+\end{figure}
+
+\section{Prototype Iteration One Schematics}
+For the back-end schematics of the prototype, see figure \ref{fig:schematics:backend}. The front-end schematics ar displayed in figure \ref{fig:schematics:frontend}.
+\label{sec:app:proto1:schematics}
+\begin{figure}
+	\centering
+	\includegraphics[angle=90,width=0.9\textwidth,page=1]{../../../Figures/PCBprototype/Backend.pdf}
+	\caption{Schematics for the back-end prototype described in section \ref{sec:proto:frontend}. The corresponding PCB is shown in figure \ref{fig:pcb:backend}.}
+	\label{fig:schematics:backend}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[angle=90,width=0.9\textwidth,page=1]{../../../Figures/PCBprototype/Job1.pdf}
+	\caption{Schematics for the front-end prototype described in section \ref{sec:proto:frontend}. The corresponding PCB is shown in figure \ref{fig:pcb:frontend}.}
+	\label{fig:schematics:frontend}
+\end{figure}
+
+\section{Prototype Iteration Two}
+\label{app:secondprotoype}
+The second iteration of a prototype brought some slight changes. The board was recombined, housing back- and front-end on a single PCB. The feedback resistors were replaced by lower temperature drift resistors, decreasing the temperature drift down to \SI{50}{ppm\per\degreeCelsius}. 
+The mode signal LED was replaced by three different coloured LEDs with a decreased power consumption. The original LED drew \SI{20}{\milli\ampere}, each of the coloured LEDs only draws \SI{2}{\milli\amp}. The colour also eliminates the need for repeated blinking, further lowering the power requirement. 
+The port 5 of the \ac{uC} is mapped to a header array, to allow attaching a screen to the device.
+In the front-end mounting holes are implemented, to allow an additional shielding of the input stage. Schematics for the design can be found in figures \ref{fig:appendix:proto2:fe} and \ref{fig:appendix:proto2:be}; the PCB layout is shown in figure \ref{fig:appendix:proto2:pcb}.
+
+\begin{figure}
+	\centering
+	\includegraphics[angle=90,width=0.9\textwidth,page=4]{../../../Figures/pAMprototype2/Job1.PDF}
+	\caption{Schematics for the front-end of the second prototype iteration.}
+	\label{fig:appendix:proto2:fe}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[angle=90,width=0.9\textwidth,page=5]{../../../Figures/pAMprototype2/Job1.PDF}
+	\caption{Schematics for the back-end of the second prototype iteration.}
+	\label{fig:appendix:proto2:be}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[angle=90,width=0.9\textwidth,page=2]{../../../Figures/pAMprototype2/Job1.PDF}
+	\caption{PCB layout for the second prototype iteration.}
+	\label{fig:appendix:proto2:pcb}
+\end{figure}
+
+\newpage
+\input{thesis_acronyms}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "../mythesis"
+%%% End: 
