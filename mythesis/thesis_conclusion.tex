@@ -1,0 +1,29 @@
+% !TEX root = mythesis.tex
+% !TeX spellcheck = en_GB
+
+%==============================================================================
+\chapter{Conclusion and Outlook}
+\label{sec:conclusion}
+%==============================================================================+
+The goal of this thesis was to further improve the \ac{pAM} developed at the TU München. Therefore, an analysis of the design was conducted, resulting in 4 main topics to handle:
+\begin{enumerate}
+	\item An upgrade of the firmware, to make it compatible with modern compilers.
+	\item An improvement of the front-end, to eliminate the internal non-linearity.
+	\item Setup of a reliable \ac{ovp}.
+	\item Enabling a faster readout to achieve a better time resolution.
+\end{enumerate}
+In chapter \ref{sec:problem_solving}, the necessary changes to the firmware are introduced. The process was used to implement a bidirectional communication, allowing more flexible use of the device.
+ 
+In the next step, the source of the observed non-linearity was investigated in chapter \ref{sec:nonlinearity}, leading to the need for a new \ac{ovp} circuit. An approach using diode clamping was suggested in chapter \ref{sec:solving:ovp}. Tests proved the approach to be suitable for implementation in the \ac{pAM}. Unfortunately, an easy insertion of the suggested \ac{ovp} was not possible without changes to the front-end part of the PCB.
+As the layout of a new revision was necessary, the front-end concept was changed over completely. The shunt resistor based input stage was replaced by a \ac{tia} setup. To allow faster measurements, an \ac{adc} with a higher sampling rate was implemented. Layout and performance of the new front-end are discussed in chapter \ref{sec:newfrontend}. The new design achieved an estimated precision of \SI{20}{\femto\ampere} at a readout rate of \SI{7}{\hertz}. The bandwidth is limited to \SI{20}{\hertz}. The power consumption increased to a moderate \SI{7}{\milli\ampere}, with frequent spikes of up to \SI{50}{\milli\ampere}. \\
+
+In the future, the readout rate could be further increased by reducing the number of values that are combined in one measurement or by moving the time-consuming calculations to the computer side. Further increase of the readout rate, would require a faster \ac{uC}.
+If a higher bandwidth is desired, the front-end could be expanded, using a broadband \ac{tia} with lower amplification followed by a voltage amplification stage.
+To accommodate for the increased power consumption, a new power supply should be set up, either utilizing an improvement of the photovoltaic powering developed by \cite{rudolph}, or based on batteries with a higher capacity. \\
+
+For further investigation of the behaviour of the new design, a second iteration of the prototype was developed. The setup could not be finished, as the ADA4530 \ac{opamp} used in the new front-end, could not be delivered in time by the manufacturer. 
+To ensure the reliability of the design, long term stability tests are necessary, as well as the study of possible temperature influences. A comparison with similar devices developed by \cite{zagreb} is supposed to be run as well. 
+To get a good measurement of the achievable precision and accuracy, a new calibration reference is needed. The \ac{keithley}, that was used up to now, could not perform measurements with the necessary precision.
+
+
+ 

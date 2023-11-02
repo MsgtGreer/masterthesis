@@ -1,0 +1,390 @@
+% !TEX root = mythesis.tex
+% !TeX spellcheck = en_GB
+%==============================================================================
+\chapter{Theory}
+\label{sec:theory}
+%==============================================================================
+Even though they do not play a significant role in this thesis, a short introduction on Gaseous Particle Detectors is provided here, in order to explain the requirement of a \acl{pAM}.
+\section{Gaseous Particle Detectors}
+Detection of ionizing particles using gas-filled detectors is a long-known principle. A first approach was the Geiger-Müller tube, useful for detection of ionizing radiation, e.g. from radioactive decays.
+Detectors as the Geiger-Müller tube combine a metal cylinder with a thin metal rod in its centre. The cylinder is filled with gas and high voltage is applied between the metal wall as the cathode and the central anode.
+Particles traversing the tube volume transfer some of their kinetic energy to the detector gas, thus ionizing the gas. The charges created in the ionization process are separated by the electric field and drift towards the corresponding electrode creating a detectable signal. 
+If the applied voltage is high enough, the electrons close to the anode get strongly accelerated due to the high electric field. The energy gained through the acceleration is sufficient to further ionize the gas, creating an avalanche. The underlying processes of secondary ionization, cause the resulting charge to be approximately proportional to the primarily deposited charge. Hence such a detector is called a proportional counter.
+
+The principle was further developed into the \ac{MWPC} by \textsc{G. Chaprak} in 1967 \cite{sauligas}. The \ac{MWPC} is constructed using two parallel cathode planes, and multiple parallel wires running in between them as anodes. Such a setup allows particle detection with a limited spatial resolution. 
+The resolution can be increased significantly by using segmented cathodes, measuring the induced signal over the segments.
+
+\subsection{Time Projection Chamber}
+Combining a \ac{MWPC} with a large drift volume results in a \ac{TPC} \cite{TPC}, which is a true 3D-tracking device. A basic sketch of a \ac{TPC} setup is shown in figure \ref{fig:theory:tpc}. The largest part of a \ac{TPC} is the gas-filled drift volume. One end acts as the drift cathode, the opposing end incorporates the readout stage. The amplification and readout stage provides a 2D information in $x$ and $y$. The $z$ component can be derived from the drift time of the electrons.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{../../../Figures/GEMTPC/TPCprinciple.png}
+	\caption{Principle setup of a \ac{TPC}. From \cite{detectorslecture}.}
+	\label{fig:theory:tpc}
+\end{figure}
+The amplification stage of a \ac{TPC} with a \ac{MWPC}, as depicted in figure \ref{fig:theory:tpcreadout}, uses three wire planes. The first one is the gating grid, that keeps the ions, created in the amplification process, from drifting back into the detector volume. When an event is expected, the gating grid is switched off to allow electrons to pass through it. The need to switch the gating grid is a strong limit on the achievable event readout rate.
+The cathode and anode plane form the amplification region as known from a \ac{MWPC}. Below the anode plane, a pad plane is implemented to derive the position resolution by measuring the signal induced from the ions created in the amplification region. 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{../../../Figures/GEMTPC/MWPCTPC.png}
+	\caption{Amplification and readout stage of a \ac{TPC} with a \ac{MWPC} based amplification stage. From \cite{detectorslecture}.}
+	\label{fig:theory:tpcreadout}
+\end{figure}
+
+\subsection{Gas Electron Multipliers}
+Traditional approaches for implementing the amplification stage for a gaseous detector are wire-based, as in the \ac{MWPC}. A "newer" approach is to use a \ac{gem}, which is a thin polyimide foil with a copper coating on both sides. For electron multiplication, the foil is perforated with a high density of holes, typically \SI{100}{\per\mm^2}. The \ac{gem} was invented by \textsc{F. Sauli} in 1997 \cite{sauligem}. 
+
+A photograph of a \ac{gem} can be found in figure \ref{fig:theory:gem:foto}. The two copper coatings of a \ac{gem}-foil are set to a voltage difference of around \SI{400}{\volt}, creating a very strong electric field, in the order of \SI{}{\kilo\volt\per\centi\meter}, in the holes. 
+Electrons created in the drift volume of a detector, see figure \ref{fig:theory:gem:stack}, drift along the drift field $E_\text{D}$ towards the \ac{gem}. The electric field guides the electrons into the holes of the \ac{gem}.
+Inside these holes, electrons undergo avalanche multiplication due to the strong field. The created secondary electrons are extracted by the extraction field. In case of the \ac{gem} stack in figure \ref{fig:theory:gem:stack}, the extraction field for one \ac{gem} is the drift field for the next \ac{gem}. The majority of ions created in the avalanche process drift to the topside copper coating and get eliminated this way. Typical particle paths for electrons and ions are depicted in figure \ref{fig:theory:gem:field}.
+
+For the upgrade of the \ac{ALICE} \ac{TPC}, the multi-wire approach, as described above, was replaced by a \ac{gem} setup. As discussed in \cite{gemamplification}, a \ac{TPC} utilizing a \ac{gem} amplification stage allows readout with faster rates, as a gating grid is no longer necessary. 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{../../../Figures/GEMsketch/GEMpic.pdf}
+	\caption{Electron-microscope image of a \ac{gem}-foil. Dimensions are given on the image. From \cite{sauligem}.}
+	\label{fig:theory:gem:foto}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\textwidth]{../../../Figures/GEMsketch/GEMstack.pdf}
+	\caption{A triple \ac{gem} stack with the drift, transfer and induction fields. From \cite{sauligas}.}
+	\label{fig:theory:gem:stack}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{../../../Figures/GEMsketch/GEMamplification.pdf}
+	\caption{Left: An incoming electron enters a \ac{gem} hole and ionizes the gas and creates electron (blue) - ion (red) pairs. Right: Electrons are extracted, ions drift back and end up on the copper coating due to their low diffusion and the low drift field. From \cite{gemamplification}.}
+	\label{fig:theory:gem:field}
+\end{figure}
+In the studies of \ac{gem}-foils, the \acp{pAM} are widely used. As an example, two topics are briefly described below. Other effects that can be studied using the \ac{pAM} include gain measurements, charge transfer and collection efficiency, see e.g. \cite{ottnad2019phd}.
+\subsubsection{Ion Backflow}
+In contrary to the above stated, some of the ions, that are created in the multiplication process, manage to drift back into the drift volume. This effect is called Ion Backflow. Ions accumulating in the drift volume will disturb the electric field. To quantize ion backflow, precise measurements of all currents in a \ac{gem} setup are necessary. Studies of the ion backflow were done in preparation of the \ac{ALICE} upgrade, see e.g. \cite{Ball_2014}.
+\subsubsection{Charging-Up effect}
+During operation of a \ac{gem}, some of the charges created in the amplification process may adhere to the polyimide core of the \ac{gem}. These charges accumulate over time and influence the electric field inside the holes \cite{chargingup}. This charging-up of a \ac{gem}-foil can cause time variations in the effective gain. 
+Figure \ref{fig:theory:measurement} shows a measurement of the anode current of a \ac{gem} detector in operation. Together with the knowledge of the input charge, this can be used to determine the effective gain of a \ac{gem}. Such measurements were done by \cite{chargingup} to quantize the charging-up effect.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.75\textwidth]{../../../Figures/theory/pammeasurements/chargeup.png}
+	\caption{Measurements of current from the pad plane of a \ac{gem} detector done with a \ac{pAM}. From \cite{chargingup}.}
+	\label{fig:theory:measurement}
+\end{figure}
+
+
+\section{Electronics}
+The following section treats some essential parts of electronics that are used in this thesis. At first an insight in \acp{opamp} and \acp{adc} is provided. After this, some effects that can disturb precision measurements are introduced. Unless otherwise stated, this section refers to \cite{art}. 
+\subsection{Operational Amplifiers}
+\label{sec:theory:amplifiers}
+Op-Amps, are electrical amplifiers with a very high, theoretically infinite, gain. The conventional schematic symbol for \acp{opamp} is depicted in figure \ref{fig:theory:opAmp}. The inputs labelled '$+$' and '$-$' are referred to as non-inverting and inverting inputs. $V_\text{SS}$ and $V_\text{CC}$ are the supply voltages; they can be uni-, or bipolar depending on the amplifier design. 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.25\textwidth]{../../../Figures/theory/opAmp/opAmpSymbol.pdf}
+	\caption{Symbol used to depict an operational amplifier in circuit schematics.}
+	\label{fig:theory:opAmp}
+\end{figure}
+Typically \acp{opamp} are used in combination with a feedback network. The characteristics for an \ac{opamp} with feedback is determined by the feedback network alone due to the high open-loop gain\footnote{The open-loop gain is the intrinsic gain of an amplifier. In contrast to the closed-loop gain, which is defined by the feedback network.}. The behaviour of an amplifier with feedback can be calculated using Ohm's law, Kirchhoff's laws and the so-called \textit{golden rules} for \acp{opamp} \cite{art}:
+\begin{itemize}
+	\item The output adjusts in order to zero the input voltage difference.
+	\item No current flows into the inputs.
+\end{itemize} 
+However, this is only true for an ideal \ac{opamp}. Real \acp{opamp} deviate from this behaviour. These deviations are expressed by different parameters usually specified in the datasheet.
+A short introduction on some of these parameters is provided here.
+\subsubsection*{Input Bias Current}
+The golden rules state that no current flows into the inputs of an \ac{opamp}. In real amplifiers, a small current still is flowing into the inputs. This is called input bias current, $I_\text{B}$. This current is depending strongly on the amplifier but is in the range of \SI{}{\nano\ampere} down to \SI{}{\femto\ampere}. 
+\subsubsection*{Input Impedance}
+The input impedance is defined as the impedance of one input with the other input grounded. For an ideal amplifier, the input impedance is infinite; for real implementations, it depends on the specific input stage. The input impedance can range from some \SI{}{\mega\ohm} up to \SI{100}{\tera\ohm}.
+\subsubsection*{Common-mode Input Range}
+ Op-Amps are usually designed to work with input voltages within the supply voltage range. Input voltages outside of this boundary can lead to drastic gain changes or malfunction of the amplifier.
+\subsubsection*{Input Offset Voltage}
+The input offset voltage ($V_\text{OS}$) is the voltage difference between the inputs, that is required to set the output to zero volt. This voltage can have a strong influence on precision measurements, shifting the zero line by several \SI{}{\micro\volt}. Some amplifiers offer the possibility to compensate for this voltage. The offset voltage drifts with time and temperature.
+
+\subsubsection{Gain-Bandwidth-Product}
+For low frequencies and closed-loop gains, that are small compared to the open-loop gain, the frequency behaviour of an \ac{opamp} is determined by the feedback network. The open-loop gain, however, is only stable up to an amplifier specific-frequency, due to low-pass filter effects in the amplifier. Beyond this point, the open-loop gain decreases continuously, see figure \ref{fig:theory:opAmpFrequency}. This behaviour is quantized with the \ac{GBW}. It is the product of the achievable open-loop gain with the desired bandwidth.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{../../../Figures/theory/opAmp/opAmpFrequency_1.png}
+	\caption{Open-loop gain $A_\text{OL}$ of an operational amplifier rolling-off at \SI{10}{\hertz}. The closed-loop gain $A_\text{CL}$ is affected by the roll-off at higher frequencies, where it is comparable to the closed-loop gain. From \cite{opamps}, modified.}
+	\label{fig:theory:opAmpFrequency}
+\end{figure}
+The roll-off of the open-loop gain limits the closed-loop gain as well.
+\subsection{Analog-to-Digital Converters}
+\label{sec:theory:adc}
+Measurements done with electronics usually take an analogue input signal. For further processing and data analysis, the analogue signal needs to be digitised, making use of an \acl{adc}. The two main characteristics of an \ac{adc} are sampling rate, given in samples per second or \SI{}{\sps}, and resolution given in bits. Choosing the best \ac{adc} can sometimes be a puzzling task, as there are various approaches to implement an \ac{adc}, all with their advantages and disadvantages. The three main architectures are Delta-Sigma \ac{adc}, Pipelined \ac{adc} and SAR \ac{adc} \cite{analogADC,tiADC,arrowADC}, all three are briefly explained here.
+\subsubsection{Sigma-Delta ADC}
+A Sigma-Delta ADC ($\Sigma\Delta$ \ac{adc}) offers a high resolution, with the downside of lower sample rates. It incorporates an integrator, a comparator and a 1-bit \ac{DAC} a simple block diagram is shown in figure \ref{fig:theory:SigmaDelta}. A $\Sigma\Delta$-\ac{adc} is repeating three steps, to achieve a precise result. First, calculating the difference ($\Delta$) between the reference from the \ac{DAC} and the input signal. Second, integrating the difference ($\Sigma$) and discriminating the integrator output. Third, switch the \ac{DAC} reference according to the discriminator output. 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{../../../Figures/theory/ADC/DeltaSigma.png}
+	\caption{Principle of a first-order $\Sigma\Delta$ \ac{adc}. From \cite{wikiSigmaDelta}.}
+	\label{fig:theory:SigmaDelta}
+\end{figure} 
+ $\Sigma\Delta$ \ac{adc} with resolutions of 8 to 32-bits and sampling rates of up to \SI{1}{\mega\sps} are commonly available.
+\subsubsection{Pipelined ADC}
+Pipelined \acp{adc} are the fastest of the three kinds of \acp{adc} discussed here; they are available with sampling rates higher than \SI{100}{\mega\sps}. The downside is the lower resolution of 8 to 16-bit.
+A pipelined \ac{adc} uses several independent stages, hence pipelined. As an example, the principle of a 12-bit \ac{adc} is shown in figure \ref{fig:theory:pipelined}. The input signal of each stage will be digitised using a fast 3-bit flash \ac{adc}\footnote{A flash \ac{adc} is an extremely fast converter that uses a voltage ladder and comparators. High resolution flash \acp{adc} are hard to realize. For a $n$-bit flash \ac{adc} $2^n-1$ precision comparators are needed.}. The result is then converted back by a 3-bit \ac{DAC}. The difference of this output and the original input signal is then amplified and fed to the next stage. After four stages the remaining signal is digitised with 4-bit flash \ac{adc}. From the 3-bit and the 4-bit outputs of the single stages, the final 12-bit signal is generated.
+The stages of such an \ac{adc} can operate in parallel, allowing four simultaneously running conversions.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{../../../Figures/theory/ADC/pipelined1.pdf}
+	\caption{A 12-bit pipelined \ac{adc}. From \cite{pipelined}, modified.}
+	\label{fig:theory:pipelined}
+\end{figure}
+\subsubsection{SAR ADC}
+The midway solution between sampling speed and resolution is the \ac{SAR} \ac{adc}. Such \acp{adc} are available with sampling rates of up to \SI{10}{\mega\sps} and resolutions of 8 to 18-bits. On start of a conversion, the \ac{SAR} is filled with an arbitrary value. The \ac{adc} samples and holds the input voltage, which is then compared with a \ac{DAC} output of the \ac{SAR}. The comparator output is used to higher or lower the \ac{SAR} value. This process is repeated until changes occur only on the \ac{LSB}.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{../../../Figures/theory/ADC/SAR.png}
+	\caption{Block diagramm of an N-bit SAR \ac{adc}. From \cite{wikiSAR}.}
+	\label{fig:theory:SAR}
+\end{figure}
+\subsubsection{Input Voltage Range}
+Another important characteristic of an \ac{adc} is its input voltage range. Together with the resolution, the input range defines the voltage level of a single bit, the \ac{LSB} voltage. Most commonly, an \ac{adc} can only digitise positive voltages, therefore, they are called unipolar. A few \acp{adc} are capable of digitising positive and negative voltages, hence bipolar.
+
+\subsection{Electronic Noise}
+\label{sec:theory:noise}
+For electronic precision measurements, noise is a factor that needs to be considered to evaluate the achievable precision. Noise in this context is the random noise generated by electronic components. An insight of the variant sources of noise and their characteristics is provided here.
+\subsubsection*{Johnson Noise}
+Johnson noise, also known as Johnson-Nyquist noise or just thermal noise is the noise generated by every resistance from thermal effects. It has a flat spectrum, which is why it is often called "white noise". The Johnson voltage noise can be calculated using:
+\begin{equation}
+\label{eq:johnsonnoise}
+	V_\text{noise}(rms)=\sqrt{4k_\text{B}TR\Delta f},
+\end{equation}
+with the Boltzmann constant $k_B$, the temperature $T$ in \SI{}{\kelvin}, $R$ the resistance and the bandwidth $\Delta f$. The amplitude at any moment in time can neither be calculated nor predicted but follows a gaussian probability distribution. It is the absolute lower limit on noise voltage in any circuit. The noise voltage can be converted into a noise current by dividing with the resistance $R$.
+Johnson noise can be represented by adding either a voltage noise source in series with a noiseless resistor or a current noise source in parallel to a noiseless resistor.
+\subsubsection*{Shot Noise}
+Shot noise is caused by the quantized nature of charges, leading to small fluctuations in the current flow. It can be expressed via:
+\begin{equation}
+	I_\text{noise}(rms)=\sqrt{2eI\Delta f},
+\end{equation}
+with the elementary charge $e$, the current flowing $I$ and the bandwidth $\Delta f$. The equation is valid only under the assumption that the charge carriers behave independently of each other.
+\subsubsection*{$1/f$ Noise}
+In contrary to Johnson and shot noise, the $1/f$ noise or flicker noise can not be derived purely by physical principles. Various sources influence the exact value of this noise, but they combine to a spectral density inversely proportional to a power of the frequency.
+\subsubsection*{Pick-Up Noise}
+Pick-up noise, also known as interference, summarizes all various kinds of noise that are picked up from external sources. A prominent example is the pickup of the \SI{50}{\hertz} signal from the power grid, but there are plenty of other sources. In contrary to the other noise sources discussed here, interference noise can not be calculated or even approximated. Interference noise can, however, be reduced by shielding or filtering.
+\subsubsection*{Noise Spectral Density}
+From the above examples, it arises that noise is a frequency-dependent property. As a convention, noise is expressed in terms of noise spectral density $v_n$, given in \SI[per-mode=symbol]{}{\volt\per$\sqrt{\text{\hertz}}$}. For a resistor, this would yield:
+\begin{equation}
+	V_\text{noise}(rms)=	\sqrt{4k_\text{B}TR}\sqrt{\Delta f}=v_\text{n}\sqrt{\Delta f}.	
+\end{equation}
+Equivalently for current noise, the current noise density $i_\text{n}$ is defined.
+\subsubsection*{Amplifier Noise}
+Operational amplifiers are complex devices; an exact calculation of the noise is impossible. Manufacturers, therefore, determine the noise of their amplifiers by measuring the characteristics for larger quantities of the product. To create a usable model, the  measured noise of an amplifier gets split up in current-based and voltage-based noise. The noise will then be combined in noise sources, as depicted in figure \ref{fig:theory:opampnoise}. 
+The input current noise density $i_n$ is summarized in two sources between the inputs and ground. The voltage noise density $v_n$ is summarized in a single noise source in series with the non-inverting input \cite{ti_noise}.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.4\textwidth]{../../../Figures/theory/opAmp/opAmpNoise.pdf}
+	\caption{Model to ease the noise calculation for \ac{opamp} circuits. With $i_n$ denoting the current noise density and $v_n$ the voltage noise density. From \cite{ti_noise}, modified.}
+	\label{fig:theory:opampnoise}
+\end{figure}
+The values for $i_n$ and $v_n$ are usually given in the amplifiers datasheet for different frequency regimes.
+\subsubsection{Quantisation Error}
+The conversion of an \ac{adc} introduces an additional kind of error. The approximation of a continuous value into a digitised produces an error. The corresponding noise density can be calculated using:
+\begin{equation}
+v_\text{n}=\frac{q_\text{s}}{\sqrt{6\Delta f}},
+\end{equation}
+where $q_\text{s}$ is the quantisation step size \cite{Plassche2012}.
+\subsubsection{Calculating Output Noise}
+When all the different noise sources in a circuit are known, the overall output noise can be calculated. This can be done utilizing the principle of superposition. The output noise for every component is calculated individually; Quadratically adding up the results yields the total output noise \cite{ti_noise}. 
+
+\subsection{Low-Level Electrical Effects}
+\label{sec:theory:precision}
+Besides the noise discussed above, there are some other electrical effects that need to be kept in mind when working with precision electronics. For normal applications, these effects are often neglected due to their low influence, but on the \SI{}{\pico\ampere} or \SI{}{\micro\volt} level they can have a significant influence. This section refers to \cite{lowlvl} unless otherwise stated.
+\subsubsection{Diode Leakage Currents}
+A diode, in theory, is a device that is conductive only in one direction and has an infinite resistance in the other. The diodes commonly used in electronics are semiconductor diodes. A semiconductor diode is formed by a junction of a p-doped with an n-doped semiconductor. A depletion region is formed at the junction. In case of a forward-biased diode, the voltage difference allows the majority charge carriers\footnote{In case of the p-doped regions the majority charge carriers are holes. For n-doped regions, the electrons are the majority charge carriers.} to pass the depletion zone, and the diode becomes conductive.
+
+In case of a backwards biased diode, the depletion zone gets widened, effectively blocking the diode for the majority charge carriers. However, the minority charge carriers can still pass the depletion region resulting in a very low current flow through the diode \cite{Festkörperphysik}. For normal operations this current is negligible, but as measured in section \ref{sec:diodeleakage} can have a considerable influence in the \SI{}{\pico\amp} range.
+As the generation of minority charge carriers in semiconductors increases with temperature, the leakage current scales with temperature. 
+\subsubsection{Triboelectric Effect}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.4\textwidth]{../../../Figures/theory/Triboelctricity/triboelectricCat.jpg}
+	\caption{The Triboelectric Effect depicted by a cat. From \cite{wikiCat}.}
+	\label{fig:theory:tribo}
+\end{figure}
+The Triboelectric effect, see figure \ref{fig:theory:tribo}, occurs, when certain materials get in contact and then get separated again. Due to unknown effects in the contact area, the materials exchange electrons, creating a charge imbalance \cite{Lacks_2011}. On separation, the two materials are left charged up. This effect is the cause of \acp{esd}, that can damage electronic components. Triboelectricity can also occur in cables due to insulator and conductor rubbing against each other. The charges created can result in a current flow, reducing the accuracy of low-level current measurements. The effect can be reduced using special cables, that coat the insulation with graphite.
+\subsubsection{Piezoelectric Effect}
+\label{sec:theory:piezo}
+In some materials as crystals, ceramics or biological materials, mechanical stress can cause small current flows. In some plastics, stored charges can cause a similar effect \cite{lowlvl}, as shown in figure \ref{fig:theory:piezo}.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{../../../Figures/theory/piezo/piezo.png}
+	\caption{Piezoelectric current generated trough mechanical stress on a plastic socket. From \cite{lowlvl}.}
+	\label{fig:theory:piezo}
+\end{figure}
+\subsubsection{Thermoelectric Effects}
+Thermoelectricity incorporates three similar effects. The Seebeck effect, the Peltier effect and the Thomson effect. The first two are briefly explained here.
+\subsubsection*{Seebeck Effect}
+The Seebeck effect occurs in material junctions with a temperature gradient. In such junctions, a small voltage is generated. The effect is quantized with the so-called Seebeck coefficient, usually given in \SI[per-mode=symbol]{}{\micro\volt\per\degreeCelsius}.
+A small collection of Seebeck coefficients is given in table \ref{tab:theory:seebeck}. The effect is sometimes used to power small devices but can also influence low-level measurements. Sockets are prone to build a small Seebeck generator from an oxidised copper contact.
+\begin{table}
+	\centering
+	\begin{tabular}{lr}
+		\hline
+		Material Junction & Seebeck Coefficient \\ \hline
+		Cu - Cu & $\leq$\SI[per-mode=symbol]{0.2}{\micro\volt\per\degreeCelsius} \\
+		Cu - Pb/Sn & $\leq$\SI{1}{}$-$\SI[per-mode=symbol]{3}{\micro\volt\per\degreeCelsius} \\
+		Cu - Si & $\leq$\SI[per-mode=symbol]{400}{\micro\volt\per\degreeCelsius} \\
+		Cu - CuO & $\approx$\SI[per-mode=symbol]{1000}{\micro\volt\per\degreeCelsius} \\ \hline
+	\end{tabular}
+	\caption{Different junction Seebeck coefficients. From \cite{lowlvl}, modified.}
+	\label{tab:theory:seebeck}
+\end{table}
+\subsubsection*{Peltier Effect}
+The Peltier effect is a reversed Seebeck effect. When a current flows through a material junction, a temperature difference is created. This effect is widely used for cooling or heating applications. 
+
+\subsubsection{Contamination Effects}
+Accumulated dirt, solder flux and moisture can degrade the performance of precision measurements. They can drastically decrease insulation resistance on \acp{PCB} or even cause electrochemical reactions. Such reactions create low-voltage batteries \cite{lowlvl}. \textit{Analog Devices} performed test measurements with flux residues, resulting in a weak battery with an open-circuit voltage of \SI{15}{\milli\volt} \cite{ADA4530}. Contaminations can be eliminated by proper cleaning.
+
+\subsection{Simulation of Electronic Circuits}
+For the verification of an electronic design, building it is the most direct approach. However, this is often not the best option, as it can be rather costly and time-consuming. An alternative is to simulate a circuit with the aid of computers. Today's standard program for circuit simulation is the \ac{spice}. As an input \ac{spice} takes ASCII text files that describe a circuit combining sources, simple devices as resistors, non-linear devices as diodes and more complex parts as integrated circuits. %For diodes and transistors special parameters are defined, that are combined in models. For \acp{IC} manufacturers often provide models in form of sub-circuits, that can be included.
+To ease the use of \ac{spice}, various graphic interfaces are provided, amongst these are LTspice by Analog Devices \cite{LTspice} or TINA by \ac{TI} \cite{LTspice}. The graphic interfaces generate the ASCII simulation files from a drawn circuit.
+
+\ac{spice} allows different forms of simulation, the most important are briefly described here. For a more detailed introduction to \ac{spice} refer to \cite{spice}.
+\subsubsection*{The DC Analysis} 
+This form of analysis calculates the voltage for all circuit nodes, with a DC source. In this simulation, capacitors are treated as disconnected and inductors as short-circuits. The non-linear behaviour of semiconductors is taken into consideration.
+\subsubsection*{The AC Analysis}
+\ac{spice} can also be used to calculate the complex node voltages as a function of frequency, under consideration of impedances and non-linear effects. To produce a reliable solution a small signal assumption is made. A variant of the AC analysis is the noise analysis, where all components are expanded with a noise source, resulting in the total noise spectral density. The noise analysis includes the types of noise from section \ref{sec:theory:noise}. 
+
+\subsubsection*{The Transient Analysis}
+Additionally \ac{spice} can perform time analysis of a circuit, with an input signal of adjustable shape.
+
+\section{Precision Measurement Techniques}
+To allow precise and accurate measurements, special care must be taken. The two main issues that can be controlled by careful layouting are interference noises and leakage currents.
+\label{sec:theory:pecision}
+\subsection{Reducing Pick-Up Noise}
+The combined noise originating from components as resistors or amplifiers, that can be calculated as explained above, is irreducible. The pick-up noise, also known as electromagnetic interference, however, can be reduced. It is created by electromagnetic fields via induction or electrostatic coupling. The influence of interference can be reduced by shielding. Simply speaking, to shield a circuit it is surrounded with metal box or mesh that is connected to ground, also known as a Faraday cage. Shielding relies on the induced currents from the electric fields and the eddy currents created by magnetic fields \cite{shielding}.
+
+\subsection{Reducing Leakage Currents}
+For current measurements in the pico- or even femtoampere range, leakage currents can be a big limit on achievable accuracy. For regular applications, \aclp{PCB} are treated as perfect insulators. This assumption is no longer valid for applications with high impedances. A typical PCB material is \ac{FR-4}, which is a composite of epoxy and fibre-glass. \ac{FR-4} \acp{PCB} have a finite surface resistance of typically \SI{1}{\tera\ohm} (\SI{10}{\giga\ohm} minimum) \cite{FR4datasheet}. This resistance can cause leakage currents between nodes at different voltages. There are multiple ways to reduce such leakage currents.
+
+\subsubsection*{PCB Materials}
+A first option is to go for PCB materials with higher resistance. A variety of different materials for special-purpose applications exist, like RF electronics or low-leakage. In contrast to typical FR-4 boards, these often use Ceramic or Teflon laminates. An example would be the RO400 series from Rogers with a specified surface resistance of \SI{4200}{\tera\ohm} \cite{rogers}. The usage of pure insulators, like a slap of Teflon is no option, as it can lead to accumulation of surface charges that can not dissipate \cite{EDN}.
+\subsubsection*{Insulating Stand-offs}
+When special PCB materials are too expensive or not practical, another option is the usage of insulating stand-offs. They are made from a good insulating material as Ceramic or Teflon, that isolates the node from the board. The circuitry is soldered floating over the PCB, with the downside of mechanical instability.
+\subsubsection*{Guarding}
+\label{sec:theory:guarding}
+Guarding is a technique where high-impedance nodes or traces are surrounded with a low impedance trace that is at a similar potential. Guarding techniques can be implemented on \acp{PCB}, as well as in cables.
+An example of guard ring implementation on PCB level is shown in figure \ref{fig:theory:Guarding}. A guard structure prevents current flows from the shielded trace to nodes of another potential by surrounding the trace with an equipotential. The guard ring can be extended by using a via stitching to connect top and bottom layers. Via stitchings are usually used for radio frequency applications but come at no extra cost and can, therefore, be implemented right away.
+\begin{figure}
+	\begin{subfigure}[b]{0.49\textwidth}
+		\centering
+		\includegraphics[align=c,width=\textwidth]{../../../Figures/theory/precisiontechniques/guarding/GuardRing.pdf}
+		%\caption{Guardring surrounding a high impedance IC input trace. For best performance the guard trace should be hooked up to a driving circuit.}
+		%\label{fig:theory:GuardRing}
+	\end{subfigure}\hfill
+	\begin{subfigure}[b]{0.49\textwidth}
+		\centering
+		\includegraphics[align=c,width=\textwidth]{../../../Figures/theory/precisiontechniques/guarding/Guard2D.pdf}
+		%\vspace{1.3cm}
+		%\caption{Implementation of a guarding structure through the PCB bulk. For connection between the guard ring and the guard plane on the bottom side, vias are implemented. Solder mask between trace and guard is removed to reduce leakage paths.}
+		%\label{fig:theory:GuardRing}
+	\end{subfigure}
+	\caption{Left: Guard ring surrounding a high impedance IC input trace. For best performance, the guard trace should be hooked up to a driving circuit. Right: Implementation of a guarding structure through the PCB bulk. For connecting the guard ring and the guard plane on the bottom side, vias are implemented. Solder mask between trace and guard is removed to reduce leakage paths.}
+	\label{fig:theory:Guarding}
+\end{figure}
+\subsubsection{Cleaning}
+Proper cleaning of the PCB can prevent the degradation of insulation resistance and the forming of electrochemical batteries. There are many different guides on how to clean a PCB provided by part suppliers like \cite{digikeyCleaning} or PCB manufacturers as \cite{wellpcbCleaning} or in datasheets of components like \cite{ADA4530}. Two approaches are often recommended, a brush with alcohol for cheap and coarse cleaning, and an ultrasonic cleaner for best performance.
+
+\section{Microcontrollers}
+A \ac{uC} is a variant of \ac{IC} combining a microprocessor with memory, timing modules and \acs{IO} modules with the advantage of decreased size. Some basics necessary for an understanding of this thesis will be summarized here. A more detailed introduction can be found in \cite{Microcontrollers}. As the \ac{pAM} use an MSP430f169 \ac{uC} from \ac{TI}, the specifications given here refer to this particular device, for more details see \cite{msp_manual}.
+
+\subsection{Timing}
+To ensure, that operations in \acp{uC} have a comparable timebase, they are all synchronized to a common clock. There are different ways to generate a clock signal, amongst of the most prominent are crystal oscillators making use of the Piezo effect, see paragraph \ref{sec:theory:piezo}. Such Crystals produce voltage signals of fixed frequency. The MSP has terminals for a \SI{32}{\kilo\hertz} and a \SI{1.8}{\mega\hertz} clock. The clock frequency determines the minimal time per operation; a \ac{uC} is limited to one action per clock pulse.
+A counter module, counting clock cycles, is used to measure time in a \ac{uC}. The MSP comes with two 16-bit time counters.
+\subsection{Control \& Status Registers}
+In general, \ac{uC} are very flexible and offer lots of adjustable features. All these configurable options are summarized in control registers. A register is an 8 or 16-bit memory. Every-bit in a register represents an option, that can be turned on or off. 
+The status of the clock counter and the \ac{IO} pins are saved in status registers and can be read from there. The registers for the various modules of the MSP can be found in \cite{msp_manual}.
+\subsection{Interrupts}
+A \ac{uC} often needs to react to external conditions, signalled by a change of state on one of the \ac{IO} pins. One way to do this is to periodically check the pin state in the program flow, this method is called polling. Polling has a lot of disadvantages, in terms of time resolution, waste of processing time and power consumption. To circumvent this, \acp{uC} use interrupts. The interrupt logic is implemented independently of the program flow and will halt the running program when an interrupt condition occurs. An interrupt condition is defined by two-bits. The \ac{IE}, and the \ac{IFG}. The \ac{IE} is set in one of the control registers and indicates if an interrupt is allowed. The \ac{IFG} is part of a status register and is set automatically when the corresponding interrupt condition occurs.
+If \ac{IE} and \ac{IFG} are both set, the program is halted, and the \ac{ISR} is called. An \ac{ISR} for every enabled interrupt has to be provided by the programmer. 
+The MSP as well as most other \acp{uC} has multiple possible interrupts. As switching all these \acp{IE} is time consuming, \acp{uC} have an additional \ac{GIE}.
+
+A special interrupt is the Watchdog, that is present on most \acp{uC}. The Watchdog is a timer module that causes an interrupt on overflow, leading to a restart of the \ac{uC}. Its main purpose is to ensure that the \ac{uC} does not get stuck in the program flow.
+
+\subsection{Programming}
+For a \ac{uC} to perform a task, it needs to be programmed accordingly. In case of the MSP, a JTAG interface is implemented. It can be used to hooked up to a flashing tool provided by \ac{TI}. Via the flashing tool, the MSP can be programmed from a Computer. By design a \ac{uC} only works with binary values. As programming in binary code is not practical, first assembler was developed. Over time compilers were developed allowing to compile higher programming languages as C to assembler. For the MSP \ac{TI} provides a special compiler enables various languages as C or Arduino to work with the MSP.
+\subsection{Digital Communication Protocols}
+A \ac{uC} is usually used as the coordinating device and controls the peripheral modules. In case of the \ac{pAM}, these are an \ac{adc}, a temperature sensor and the \acs{xbee} modules. To standardize the communication, several protocols were developed over time. Such protocols usually connect one coordinating device, the master, to multiple other devices, the laves.
+\subsubsection{Inter-Integrated Circuit Bus}
+\label{sec:iic}
+The \ac{iic} Bus was developed by Philips Semiconductors; the specifications can be found in \cite{iic}. The \ac{iic} only needs two wires, one for the serial clock (\pin{SCL}) and one for data (\pin{SDA}) to allow bidirectional communication. The master generates the \pin{SCL} signal for all slaves.
+
+The logic levels for an \ac{iic} bus are not fixed but defined by the supply voltage $V_{DD}$. The lower level (LOW) is defined as $<0.3V_{DD}$ and the high level (HIGH) as $>0.7V_{DD}$. The bus lines have to be normally HIGH, which can be assured by the use of pull-up resistors. 
+
+The transfer of data is dependent on the \pin{SCL} signal. Changes on the \pin{SDA} are only valid for data transfer when they occur during a LOW on \pin{SCL}. A data transfer is started with a START condition and finished with a STOP condition. START is defined as a HIGH to LOW transition on \pin{SDA} with \pin{SCL} staying HIGH. Accordingly STOP is a LOW to HIGH \pin{SDA} transition.
+Between START and STOP an arbitrary number of bytes can be transferred, but each byte has to be followed with an acknowledge. For an acknowledge the transmitter has to release the \pin{SDA} line after the eighth clock pulse, the receiver has to pull it LOW and keep it LOW during the ninth clock pulse. If no acknowledge is received, a valid data transmission can not be ensured.
+
+Selection of a Slave device for reading or writing is done by transmitting the address of the device; followed by a R/$\overline{W}$-bit to indicate the direction of the communication.
+
+\subsubsection{Serial Peripheral Interface}
+The \ac{spi} was developed by Motorola in the year 2000; the specifications can be found in \cite{spi}.
+\ac{spi}, in contrary to the \ac{iic} bus, uses 3 wires. One for the serial clock (SCL), one for serial data in (SDI) and one serial data out (SDO). In some configurations, there is an additional select line per slave. \ac{spi} allows parallel read and write of data and in contrast to \ac{iic} does not use any start/stop conditions or acknowledges. 
+The clock polarity of an \ac{spi} is configurable. One clock state allows changing the SDO and SDI values; on the other state, the values are valid and can be read.
+
+\section{XBee Operation}
+\label{sec:theory:XBee}
+In the following chapters, the \acs{xbee} radio module plays an important role, as it is used for communication with the \ac{pAM}. The basics of operation will be explained here, for more detailed information refer to \cite{xbeemanual}.
+Communication with the XBee modules is done via a \ac{USART} interface with a \SI{3.3}{\volt} logic.
+The pinout of an XBee module is shown in figure \ref{fig:theory:XBeePinout}. For the basic operation, the \pin{VCC} is connected to \SI{3.3}{\volt}. \pin{DOUT} and \pin{DIN} are used for communication and hooked up to the host device. The \pin{SLEEP\_RQ} is connected to the host as well and used to toggle sleep mode. \pin{GND} is connected to ground. All the other pins are left unconnected.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{../../../Figures/theory/XBee/XBeePinout.png}
+	\caption{Pinout of the XBee radio modules. From \cite{XBeePinout}.}
+	\label{fig:theory:XBeePinout}
+\end{figure}
+\subsection{Mode of Operation}
+The \acs{xbee} modules have two modes of operation. First, the transparent mode, where a module acts as a piece of transmission line. All data is directly streamed from one device to the other. The Second mode is the \ac{api} mode, which arranges communication in frames. The API mode comes with some benefits, including acknowledges for send packages, signal strength indicators, source addresses, and the possibility to change the module configuration. For operation with a \ac{pAM}, the \acs{xbee} modules are operated in API mode.
+\subsection{API Frame Structure}
+The API frames can be sorted in three general categories:
+\begin{itemize}
+	\item Command frames for programming the module,
+	\item RX frames, send over the USART when data is received,
+	\item TX frames, received over the USART with data to be send,
+\end{itemize}
+The modules used in the \ac{pAM} are programmed from the beginning\footnote{This is done with the XCTU firmware provided by Digi \cite{digi}.}.
+For operation in a \ac{pAM}, only the TX and RX frames are of interest. Both frames exist in 2 variations, one with 64-bits addressing and one with 16-bit addressing. The \acp{pAM} are currently only using 16-bit addresses. The frames for receiving and transmitting are shown in figure \ref{fig:xbee:api}.
+\begin{figure}\centering
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{../../../Figures/XBee/TX16Frame.png}
+		\caption{\acs{xbee} \acs{api} frame, as send from host to module to issue a transmission of the contained data.\vspace{1cm}}
+		\label{fig:xbee:api:tx}
+	\end{subfigure}
+	%\vspace{1cm}
+	\begin{subfigure}{0.85\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{../../../Figures/theory/XBee/Xbeerx.pdf}
+	\caption{XBee API frame containing received data, as transmitted from module to host.}
+	\label{fig:xbee:api:rx}
+\end{subfigure}
+ \caption{Important \acs{xbee} API frames. From \cite{xbeemanual}.}
+	\label{fig:xbee:api}
+\end{figure}
+
+The checksum for all frames is calculated by adding up all bytes of the message, excluding frame delimiters and length. The eight lowest-bits of the result are subtracted from 255 (0xFF).
+\subsection{Power Consumption and Sleep Mode}
+An active \acs{xbee} module draws around \SI{40}{\milli\ampere} of current, making it unsuitable for low power applications. To reduce the average power consumption, the modules come with sleep modes. To put a module in sleep mode, the \pin{SLEEP} pin has to be pulled high. In sleep mode the module draws less than \SI{50}{\micro\ampere}, but can not receive or transmit data. Waking up from sleep mode takes \SI{13.2}{\milli\second}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "mythesis"
+%%% End: 

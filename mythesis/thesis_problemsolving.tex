@@ -1,0 +1,394 @@
+% !TEX root = mythesis.tex
+% !TeX spellcheck = en_GB
+%==============================================================================
+\chapter{Addressing the Issues}
+\label{sec:problem_solving}
+%==============================================================================
+In chapter \ref{sec:current_status} an introduction on open topics was given. An update of the firmware, investigations on the cause of the non-linear behaviour and development of a new \ac{ovp} solution are necessary. These three topics will be addressed in this chapter.
+
+\section{Firmware Update}
+\label{sec:newfirmware}
+As previously stated, the firmware for the \ac{pAM} is not compatible with the compiler provided and maintained by \ac{TI}. One of the goals in the scope of this work was to adapt the firmware to achieve compatibility. As this progress requires some significant changes in the code, it was used to develop new features and restructure the program, in parallel.
+\subsection{Code Syntax}
+To be compatible with the compilers provided by TI some changes to the syntax of the code were necessary.
+\subsubsection*{Pin addressing}
+One of the biggest changes that had to be made was the way the pins and ports of the \ac{uC} were addressed. In the previous firmware versions, the pins and ports were accessible similarly to objects, via the "." operator. The new compiler fills registers from 8-bit numbers. As an example, the direction of pin 2 of port 1 should be set to 1, allowing usage as an output pin.On the Left, the way it was done with the previous compiler; On the right, the way the new compiler requires:\\
+\begin{minipage}{\textwidth}
+\begin{minipage}{0.49\textwidth}
+\begin{lstlisting}[style=cpp]
+port1.dir.pin2 = 1;
+\end{lstlisting}
+\end{minipage} 
+%\hfill\vrule\hfill
+\begin{minipage}{0.49\textwidth}
+\begin{lstlisting}[style=cpp]
+port1_dir = 0b00000100;
+\end{lstlisting}
+\end{minipage}
+%\centering
+%\captionof{lstlisting}{How to set the direction of port 1, pin 2 to serve as output. On the left, the program accesses pin2 in the dir register of port2. On the right, the value of the register port1\_dir is set.}
+%\label{code:compare1}
+\end{minipage}\\
+\newline
+Register content can be changed in two ways. Either assigning a value to the register, however, this would overwrite the status of all other pins. This can be circumvented by using a-bitwise operation:
+\begin{lstlisting}[style=cpp]
+port1_dir |= 0b00000100;
+\end{lstlisting}
+The 8-bits are individually or' ed with the 8-bits of $0b00000100$, changing the value of the second-bit without influencing the other-bits.
+The inverse operation to this is-bitwise \textit{not and}:
+\begin{lstlisting}[style=cpp]
+port1_dir &=~ 0b00000100;
+\end{lstlisting}
+To further increase readability, the-bitwise operations were assigned aliases. A small example:
+\begin{lstlisting}[style=cpp]
+#define set_high |= 
+#define set_low &= ~
+\end{lstlisting}
+Correspondingly the binary numbers that represent each pin are assigned with the pin name:
+\begin{lstlisting}[style=cpp]
+#define pin0 0b00000000
+#define pin1 0b00000010
+\end{lstlisting}
+The initial example hence is now written as:
+\begin{lstlisting}[style=cpp]
+port1_dir set_high pin2;
+\end{lstlisting}
+
+%\subsubsection*{Interrupt routine}
+%Another change in syntax was the declarations of interrupt routines
+
+\subsection{File Structure}
+To ease handling of the code, it was split up in different source files and their headers. All functions concerning the \acs{xbee} for example, are gathered in \textit{xbee.c} with the corresponding \textit{xbee.h}. These files are shared between the different versions of the firmware, allowing introduction of new features on all of them.
+
+\subsection{Bidirectional Communication}\label{sec:2waycom}
+As mentioned before there, are possible options that change behaviour and output of the \ac{pAM}. The options are set together with the receiver address in the flashing process. The devices can be made more flexible by allowing wireless two-way communication between a \ac{pAM} and the receiving computer. The hardware setup of all generations of \acp{pAM} already supports this. On the software side, functions handling the reception of data are needed. 
+The parameters need to be set before the measurement is started. Therefore, the firmware was modified to enter an idle state on start-up, waiting for a handshake with the external setup. To indicate the device is waiting for setup, the indicator LED is turned on. The \code{set\_up} flag is introduced to indicate that the device has been set up successfully. 
+As the USART module of the MSP430 has interrupt capability, the corresponding \ac{ISR} will be used to handle incoming messages. 
+
+An \acs{xbee} module will immediately send out data it received in an \ac{api} frame, see section \ref{sec:theory:XBee}. The \ac{uC} will read the first character, store it in the \ac{USART} receive buffer (U0RXBUF) and set the \ac{USART} receive interrupt flag (URXIFG0). This generates an interrupt request, causing the program to jump to the \ac{USART} interrupt routine. 
+
+The \ac{ISR} at first checks if the device is already setup. Next step is to disable the \ac{USART} interrupt and hold the Watchdog timer. The received data is read using the \code{rx\_request()} function. 
+This function will read the message characters into a buffer array by polling on URXIFG0. To simplify the message handling on the microcontroller site, an upper limit \code{length} was set on the message length, and the char \code{0xFF} was reserved to indicate the end of the message. The polling is stopped when either \code{length} bytes were read or the second to last byte was the end of message indicator.
+From the message array, the parameters are derived by scanning for two indicators. The first indicates that the next two bytes contain the address of the receiving station. The second indicates that the following bytes contain the runtime parameters. Currently, there are two parameters for the revisions three and four to be set. The sensitivity mode to operate in and if the \ac{adc} raw values are to be sent in addition.
+The list of parameters can be extended in the future.\\
+
+
+To ensure correct setup, the \ac{pAM} answers with a frame containing all the set flags. The USART interrupt is disabled after this handshake, to ensure stable operation.
+It was tried to allow changing the parameters during runtime by allowing further interrupts. This led to spurious interrupts, disturbing the device operation. 
+
+A flow-diagram showing this initialisation loop can be found in figure \ref{fig:firmware:new:init}.
+\begin{figure}
+	\centering	\includegraphics[width=.8\textwidth]{../../../Figures/pAMworkflow/new/initialization/initilization.pdf}
+	\caption{The initialisation process for \ac{pAM}, as implemented in the firmware versions 3.2 and 5.0.}
+	\label{fig:firmware:new:init}
+\end{figure}
+
+Only after this handshake of the \ac{pAM} with the external setup, readout is possible, as introduced in section \ref{sec:firmwareold}.
+
+The changes described above are combined in the firmware version 3.2.
+To ensure compatibility with the new firmware, the \ac{pamos} and \ac{calibana} software were modified. The necessary modifications are discussed in the next section.
+
+\subsection{Changes to PAMOS}
+The \ac{pamos} software is handling the data acquisition of the \ac{pAM} on the computer side. It is the main software used to communicate with the devices. It needs to be adapted to support the two-way communication implemented in the firmware. A first approach was to use one of the various open-source libraries available for the XBee modules. The \textit{libxbee3} library \cite{libxbee} was chosen. The approach was discarded after the library proved to be to slow to keep up with the revision 5 of the \ac{pAM}, developed in chapter \ref{sec:newfrontend}. 
+
+Therefore, a custom solution was developed based on the \textit{termios} library \cite{termios}, which was already used for data reading in the previous version of \ac{pamos}. The \textit{termios} library provides a set of functions that can be used to control an asynchronous communication port of a computer, e.g. the USB port. Reading and writing to the port is handled as it is done for regular files. The message handling on the computer side was made more complex, including different error-handling methods. This is possible, as a computer is noticeably faster than the \ac{msp} used in the \acp{pAM}.
+
+An introduction on the functions created around this library to manage the \ac{pAM} communication will be given here. To ease handling, all \ac{pAM} related variables and functions are gathered in the \code{pAMeter} class:
+\begin{codecpp}[caption={pAMeter structure in the \ac{pamos} software. The structure contains all parameters that are necessary to allow flawless communication.}]
+class pAMeter {
+	public:
+	int fd; //!< file descriptor pointing to a file managed by a termios structure. Used to read and write from usb port
+	unsigned int station; //!< The stations 16-bit address, filled from startup argument -s
+	unsigned int receiver; //!< The 16-bit address of the receiver used, filled from startup argument -r
+	unsigned char mode; //!< The mode the pAMeter should use, filled from startup argument -m
+	unsigned char dataFormat; //!< Determines what data to be transmitted, filled from startup argument -F
+	unsigned char REVISION; /*!< Revision of the pAMeter in use, transmitted by the pAM on setup. Can be mapped to a readable value with calc_mode()*/
+	unsigned int frame_id = 0; //!< frame id for counting frames
+	unsigned char delay; //!< Rev 5 only, determines the number of wait cycles put between two readings
+	int debug=1;
+	struct pAMmessage msg; //!< used to store a single frame transmitted by a pAMeter
+	std::map<unsigned short, int> revision; //!
+	std::map<unsigned short, calibration_t> cal; //! contains the calibration for the station
+	int initiate(); //!< organizes the setup of a pAM with mode, dataFormat etc. and checks if the setup was successfull
+	int setup_interface(); //!< sets up all termios attributes and applies them to the file behind fd
+	int send_init(); //!< sends the initialisation frame and checks for a confirm
+	int TX(unsigned char buffer, unsigned int length); //!< transmits buffer with size length with the defined api framework
+	int RX(); //!< used to receive a frame and store it in a pAMmessage, verifies checksum
+	std::tuple<unsigned char, unsigned int> message_handler(); //!< identifies a received message and fills the pAMmessage 	
+};
+\end{codecpp}
+\subsubsection{Initialisation}
+The port is handled alike a file, as stated before. Therefore, the first step is to open the port and link it to the file descriptor \textit{fd}:
+\begin{lstlisting}[style=cpp]
+pAM->fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY);
+\end{lstlisting}
+The \textit{termios} library associates a terminal to the file that handles the communication. This terminal has to be set up with the communication parameters, e.g. baud rate, parity, word length. This is done by the \code{setup\_interface()} function. This allows flawless communication with the \acs{xbee}. The initialisation of the \ac{pAM} is done in the \code{initiate()} function.
+The first step is to send out the initialisation frame for the \ac{pAM}, see section \ref{sec:2waycom}. This is done by the \textit{TX()} function, shown in listing \ref{lst:pamos:TX}. It fills all required frame data in the \code{buffer} array and calculates the checksum.
+Afterwards, the array is written to the USB port, but it is only transmitted if the data is followed by the carriage return character \code{"\textbackslash r"}. The sending is repeated until an acknowledge from the XBee is received. If a frame is received, that is no acknowledge, the program prints an error message and holds, as a successful setup can not be guaranteed.
+When an acknowledge is received, the program awaits the confirmation frame from the \ac{pAM}. If one of the parameters in the confirmation frame does not match, the program returns an error message and stops.
+\begin{codecpp}[caption={\ac{cpp} function for transmitting data with an XBee module and checking if an acknowledge was received\label{lst:pamos:TX}.}]
+int pAMeter:: TX(unsigned char* buf, unsigned int length)
+{
+	tuple<unsigned char, unsigned int> handle;
+	unsigned char buffer[1 + 2 + 1 + 1 + 2 + 1 + length + 1];
+	buffer[0] = 0x7e;
+	buffer[1] = ((length + 5) >> 8);
+	buffer[2] = ((length + 5) & 0x00ff);
+	buffer[3] = 0x01;
+	buffer[4] = 1; //frame_id++;
+	buffer[5] = (station >> 8);
+	buffer[6] = (station & 0x00ff); 
+	buffer[7] = 0x00;
+	for (unsigned int i = 0; i < length; i++) {
+		buffer[i + 8] = buf[i];
+	}
+	buffer[8 + length] = 0;
+	buffer[8 + length] = checksum(buffer, sizeof(buffer));
+	do {//< send until acknowledge is received
+		sleep(0.3);
+		write(fd, buffer, sizeof(buffer));
+		write(fd, "\r", sizeof("\r"));
+		sleep(0.5);
+		if (RX() == 1) {
+			handle = message_handler();//< analyzes the received frame
+			if ((get<0>(handle) == 0x89) && (get<1>(handle) == 0)) {
+				//< is acknowledge
+				if(debug) cout << "send init success" << endl;
+				return 1;
+			} else {
+				printerr("TX failed", " ");
+				return 0;
+			}
+		}
+	} while (1);
+	return 1;
+}
+\end{codecpp}
+\subsubsection{Receiving Data}
+The \code{RX()} function, see listing \ref{lst:pamos:RX}, reads one char from the port. If the char is the frame delimiter from an XBee \ac{api} frame, the function will try to read the message, else it will return a \textit{nothing received}. 
+The next two chars in the buffer should be message length, see section \ref{sec:theory:XBee}. The message length is extracted from these, and a message of this length is read. The message is validated by calculating its checksum. If the checksum does not hold, \textit{invalid message} is returned. The full message is stored in the message buffer to be further analysed by the \code{message\_handler()} function.
+\begin{codecpp}[caption={\ac{cpp} function, that reads data from the USB port\label{lst:pamos:RX}.}]
+int pAMeter::RX()
+{
+	unsigned char del = 0;
+	read(fd, &del, 1);
+	if (del == 0x7e) {
+		char len_buf[2] = { 0 };
+		read(fd, &len_buf, 2);
+		msg.length = ((len_buf[0] << 8) + (len_buf[1]));
+		if(debug) cout << "received massge w length : " << msg.length << endl;
+		if ((msg.length < 0) | (msg.length > 255)) {
+			printerr("message length out of boundaries");
+			cout << msg.length << endl;
+			return 0;
+		}
+		read(fd, &msg.buffer, msg.length);
+		unsigned char checksum_buf[1];
+		read(fd, &checksum_buf, 1);
+		msg.checksum = checksum_buf[0];
+		unsigned char temp = 0;
+		for (unsigned int i = 0; i < msg.length; i++) {
+			if(debug)cout << " " << (int)msg.buffer[i];
+			temp += msg.buffer[i];
+		}
+		if(debug)cout << endl;
+		if (msg.checksum + temp != 255) {
+			printerr("checksum not valid");
+			return 0;
+		}
+		return 1;
+	} else {
+		if(debug)cout << "not received anything" << endl;
+		return -1;
+	}
+}
+\end{codecpp}
+The \code{message\_handler()} function identifies the type of \ac{api} frame and extracts the contained data.
+
+
+\subsection{Changes to CalibAna}
+\label{sec:solving:calibana}
+For the CalibAna software, similar functions were implemented to control the \ac{pAM}. However, the increased readout frequency of the new revision, developed in chapter \ref{sec:newfrontend}, caused problems.
+The Keithley, needs some time to perform a precise measurement\footnote{The influence of measurement time on the precision is briefly discussed in section \ref{sec:results}}. To ensure this, the data acquisition is artificially lengthened by adding a delay of one second. The fast \ac{pAM} will perform multiple measurements during this time, leading to a pile-up.
+Reading from the port read the next available message, not the last received one. A single read command per voltage step hence will result in outdated data. To work around this problem, the reading process was moved to a separate thread running the \code{continousread()} function, see listing \ref{lst:calibana:contread}. The function calls \code{RX()} until a frame is received. The \code{message\_handler()} function checks if the received message is a receive frame, which sets the \code{valid} flag. When the most recent frame is to be saved for calibration, the main program sets the \code{pause} flag, holding the readout when the next valid data-frame is available.
+\begin{codecpp}[caption={\ac{cpp} function, that continuously tries to read from the USB port and on success stores the message\label{lst:calibana:contread}.}]
+void pameterneu::continousread()
+{
+	while (!stop) {
+		valid = 0;
+		tuple<unsigned char, unsigned int> handle;
+		sleep(0.2);
+		int status;
+		do {
+			status = RX();
+		} while (!(status==1));
+		handle = message_handler();
+		if (!((get<0>(handle) == 0x81) && (get<1>(handle) == 1))) {
+			valid = 0;
+		} else {
+			valid = 1;
+		}
+		while (valid && pause) {
+			cout << "waiting for data read" << endl;
+		}
+	}
+}
+\end{codecpp}
+\subsubsection*{CalibAna Data Analysis}
+To simplify data analysis and allow more flexibility, a new plot program was developed using \textit{python}, to replace the gnuplot script developed by \cite{roedel}. Python was chosen as it is more versatile than gnuplot and more commonly known. %\footnote{And due to the authors lack of knowledge about gnuplot.}
+The plot program was developed to be capable of producing calibration data for the revision 3 and 4 \ac{pAM} as well as the revision 5 devices.
+The calibration data output of CalibAna was modified, adding a header to the file. The header contains calibration parameters like mode, number of measurement runs, station and revision. The python script reads data from this header and uses it to fit calibration functions to the data and produce plots according to the revision and range.
+
+
+\section{Non-Linear Measurements}
+\label{sec:nonlinearity}
+As introduced above the devices show a characteristic non-linearity; the origin of this is explored here. 
+The non-linearity can be found on all modes of sensitivity, see figure \ref{fig:measurement:old:comparemodes}. Hence the effect seems to be independent of the measured current and probably occurs in the voltage signal shaping of the front-end.
+\begin{figure}
+	\centering
+	\begin{subfigure}{\textwidth}
+		\includegraphics[width=\textwidth,page=1]{../../../Figures/pAMOld/Measurements/cal_stat16_rmode0_rand_temp_2017-01-18_00.34_plot.pdf}
+	\end{subfigure}
+	\begin{subfigure}{\textwidth}
+	\includegraphics[width=\textwidth,page=1]{../../../Figures/pAMOld/Measurements/cal_stat16_rmode3_rand_temp_2017-01-16_10.33_plot.pdf}
+	\end{subfigure}
+	\caption{Calibration measurement for station 16 in lowest and highest sensitivity mode.}
+	\label{fig:measurement:old:comparemodes}
+\end{figure}
+For investigation, the front-end was simulated using LTspice. The effect could not be reproduced quantitatively, as a model for the SA5.0CA Diode was missing. However using a model for a diode of a similar type, it could be shown, that the diode adds a non-linear characteristic to the design. The non-linearity is caused by the diode clipping the feedback voltage, which propagates to the output voltage.
+Measurements, done with all diodes removed, indeed showed no such effects, see figure \ref{fig:measurement:old:noOVP}.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth,page=1]{../../../Figures/example_pAmeter_old/old_no_ovp.pdf}
+	\caption{Calibration measurement for a station with removed diodes.}
+	\label{fig:measurement:old:noOVP}
+\end{figure}
+Removing diodes from the front-end leaves the \ac{pAM} without over-voltage protection. A new solution has to be found; the next sections will treat this topic.
+ 
+\section{Over-Voltage Protection}
+\label{sec:solving:ovp}
+The \acp{pAM} are operated at high voltages. Fast ramping or higher than expected currents, e.g. discharges in the \acp{gem} attached, can lead to large voltage differences between the input terminals. Such over-voltage conditions can result in malfunction of the input stage amplifier. To prevent such events, diode clamping is a commonly used technique. As introduced in section \ref{sec:status:ovp}, the devices come with two \ac{ovp} structures. 
+The first one consists of two antiparallel diodes between the \ac{opamp} inputs, see figure \ref{fig:frontend:old:ovp1}. These diodes are no appropriate \ac{ovp}, as they connect the non-inverting amplifier input, with the inverting input. As introduced in section \ref{sec:theory:amplifiers}, an ideal \ac{opamp} adjusts the output to have matching inputs. Applying large differential voltages between the inputs can lead to the destruction of an amplifier. In this setup, however, the inverting input is only defined by the output voltage and the feedback loop. An over-voltage condition between the \ac{opamp} inputs is highly improbable. 
+
+A similar argument is valid for the SA5.0CA diode that was added to the feedback loop, see figure \ref{fig:frontend:old:ovp2}. It limits the feedback loop voltage but has no effect on the non-inverting input.
+
+Expected over-voltage conditions occur between the input and output of the \ac{pAM}. The input terminal is connected to the non-inverting \ac{opamp} input; the output is connected to the device ground-plane. An over-voltage between the terminals can force the input common-mode voltage to be outside of the amplifier supply voltage range, which can damage the amplifier. The input trace should, therefore, be clamped. Three methods of over-voltage protection, using diode clamping, are discussed in the next section.
+
+
+\section{Alternative Over-Voltage Protection Circuits}
+There are different approaches to limit the voltage range of a trace that employ diodes. Three possibilities are discussed here, to provide an insight into the possible errors that can occur.
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.3\textwidth}
+		\includegraphics[width=\textwidth,page=1]{../../../Figures/OVPprinciples/antiparallel.pdf}
+		\caption{Antiparallel Diodes.}
+		\label{fig:ovpprinciples:antiparallel}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.3\textwidth}
+	\includegraphics[width=\textwidth,page=1]{../../../Figures/OVPprinciples/btob.pdf}
+	\caption{Back to back Diodes.}
+	\label{fig:ovpprinciples:btob}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.3\textwidth}
+	\includegraphics[width=\textwidth,page=1]{../../../Figures/OVPprinciples/extpot.pdf}
+	\caption{Reversed biased diodes.}
+	\label{fig:ovpprinciples:extpot}
+	\end{subfigure}
+	\caption{3 different diode clamping circuits, that could be used as \ac{ovp}.}
+	\label{fig:ovpprinciples}
+\end{figure}
+Version 1 uses two antiparallel diodes from the protected trace to ground, see figure \ref{fig:ovpprinciples}. Either diode becomes conductive when the input voltage exceeds its forward voltage. 
+A second possible setup, depicted in figure \ref{fig:ovpprinciples:btob}, is to put the diodes back-to-back or front-to-front, extending the input range to the reverse breakdown voltage of the diodes. A third solution would be to clamp to an external potential, as in figure \ref{fig:ovpprinciples:extpot}. All three solutions were simulated in LTspice to test their behaviour. For this a full model of the circuit shown in figure \ref{fig:frontendsketch} was implemented, and the respective diode configuration was placed on the non-inverting input of the first amplifier. 
+\subsubsection*{Antiparallel Diodes}
+Using this configuration will strongly limit the input voltage range to the diodes forward voltage, which typically is around \SI{0.7}{\volt}. The simulation results are depicted in figure \ref{fig:ovpprinciples:sim:antiparallel}, showing that such a setup is not a viable solution.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth,page=1]{../../../simulations/frontend_old_ovp/antiparallel/ovpsimulations_diode.pdf}
+	\caption{Over-voltage protection using antiparallel diodes. The dark grey area would not be measured by the \ac{pAM}. The light grey area is the range, that can be digitised by the \ac{adc}, and the white area is the range that is calibrated.}
+	\label{fig:ovpprinciples:sim:antiparallel}
+\end{figure}
+\subsubsection*{Back-to-Back Diodes}
+\begin{figure}
+	\centering
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=\textwidth,page=1]{../../../simulations/frontend_old_ovp/btob/ovpsimulations.pdf}
+	\end{subfigure}
+%	\begin{subfigure}{0.49\textwidth}
+%		\centering
+%		\includegraphics[width=\textwidth,page=2]{../../../simulations/frontend_old_ovp/btob/ovpsimulations.pdf}
+%	\end{subfigure}
+	\caption{Over-voltage protection using back-to-back diodes. The dark grey area would not be measured by the \ac{pAM}. The light grey area is the range, that can be digitised by the \ac{adc}. The white area represents the calibration range. The upper plot shows voltage on the non-inverting input vs input current and a fit on this data. The fit range is limited to the calibration range. The lower plot shows the deviation of simulation results from the linear fit.}
+	\label{fig:ovpprinciples:sim:btob}
+\end{figure}
+The second setup utilizes the reverse breakdown of a diode, making it conductive. For such a setup a diode with a low reverse breakdown voltage is needed, a Zener diode for example.
+Using diodes in this configuration allows a larger measurement range, depending on the reverse breakdown voltage of the diodes. The non-linearity is relatively small, but diode leakage currents can occur and influence the measurement. The simulation results are shown in figure \ref{fig:ovpprinciples:sim:btob}.
+\subsubsection*{Clamping to an External Potential}
+\begin{figure}
+	\centering
+	\begin{subfigure}{\textwidth}
+		\includegraphics[width=\textwidth,page=1]{../../../simulations/frontend_old_ovp/extpot/ovpsimulations_diode.pdf}
+	\end{subfigure}
+%	\begin{subfigure}{0.49\textwidth}
+%		\includegraphics[width=\textwidth,page=2]{../../../simulations/frontend_old_ovp/extpot/ovpsimulations_diode.pdf}
+%	\end{subfigure}
+	\caption{Over-voltage protection using diode clamping to an external potential. The dark grey area would not be measured by the \ac{pAM}. The light grey area is the range, that can be digitised by the \ac{adc}. The white area represents the calibration range. The upper plot shows voltage on the non-inverting input vs input current and a fit on this data. The fit range is limited to the calibration range. The lower plot shows the deviation of simulation results from the linear fit.}
+	\label{fig:ovpprinciples:sim:extpot}
+\end{figure}
+The third option relies on the forward conductivity of the diodes. In contrast to the first design, it does not put such a sharp limit to the range. It allows an adjustable input range, depending on the external potential. The resulting non-linearity is small compared to the other two options, as shown in figure \ref{fig:ovpprinciples:sim:extpot}. In normal operation both diodes are driven in a backwards biased configuration, leading to small leakage currents that can degrade the accuracy.
+
+\section{An OVP Prototype}
+For testing purpose, the third option was set up on a PCB, to be plugged in the signal path of a \ac{pAM} station. Therefore, two considerations had to be made. First, a diode with low leakage and a high backwards breakdown voltage is necessary. Second, reliable voltage generators for the external potentials are needed.
+\subsection{OVP Diode Choosing}
+\label{sec:diodeleakage}
+For the choice of suitable OVP diodes, \cite{elektrokompendium} suggests using the base-collector-diode of a small signal npn-transistor, as depicted in figure \ref{fig:transistorasdiode}. Supposedly they have a lower leakage current than commonly available low-leakage diodes. To verify this claim, the leakage currents of several different transistors and diodes were measured using a Keithley 6517B Electrometer. Results of these measurements are shown in figure \ref{fig:diodeleakage}, leading to the conclusion that the base-collector np-transition indeed has a suitably low leakage current. For setup of a prototype, a BC546B transistor was chosen.
+\begin{figure}
+	\centering
+		\centering
+		\includegraphics[width=0.4\textwidth,page=1]{../../../Figures/TransistorAsDiode/transistorasdiode.pdf}
+		\caption{Equivalent circuit for a diode formed by the base-collector pn-junction of a transistor.}
+		\label{fig:transistorasdiode}
+\end{figure}
+\begin{figure}
+		\centering
+		%\footnotesize
+		\includegraphics[width=\textwidth,page=1]{../../../Figures/Diode_leakage_currents/DiodeLkg/diodeleakage.pdf}
+		\caption{Measured leakage currents for different diodes. Error bars are too small to be displayed.}
+		\label{fig:diodeleakage}
+\end{figure}
+
+
+
+\subsection{Voltage Generation}
+For this setup, adjustable voltage regulators are needed, one to provide a negative and one for a positive voltage. Common regulators are designed to source currents. In case of an over-voltage condition in this setup, the positive supply would need to sink \SI{}{\milli\ampere} currents\footnote{Correspondingly, regulators for negative voltages are meant to sink currents but fail at sourcing them.}. This problem needs to be circumvented.
+
+A regulator for stepping down a positive voltage as in figure \ref{fig:RegulatorConfig:normal}, can be used to provide a negative voltage, with a good sourcing capability. Connecting the \pin{GND} pin to \SI{-9}{\volt} and the input to ground and adjust the output to \SI{+7.5}{\volt} refereed to \pin{GND} results in a refereed-to-ground output of \SI{-1.5}{\volt}. Similarly a regulator for negative voltages can be used to provide a positive voltage.
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth,page=1]{../../../Figures/RegulatorConfigurations/NormalConfig.pdf}
+		\caption{Voltage regulator in its normal setup.}
+		\label{fig:RegulatorConfig:normal}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth,page=1]{../../../Figures/RegulatorConfigurations/InvertedConfig.pdf}
+		\caption{How the same regulator can be used to provide a negative voltage with a higher source capability.}
+		\label{fig:RegulatorConfig:inverted}
+	\end{subfigure}	
+\end{figure}
+
+\subsection{Test Operation}
+To test the protection capability of the prototype, a \SI{5}{\kilo\volt} DC source was connected between the input of the prototype and ground. The output was monitored with a voltmeter. In repeated test operations the output stayed at ground level, showing no influence from the input voltage.
+
+As the setup proved to be a suitable \ac{ovp}, it was inserted in the input path of a \ac{pAM}. A calibration measurement, see figure \ref{fig:ovptest}, showed no non-linear effects.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth,page=1]{../../../Figures/example_pAmeter_old/old_ovp_improved.pdf}
+	\caption{Calibration measurement run with the OVP prototype inserted in the input path.}
+	\label{fig:ovptest}
+\end{figure}
+Something that could not be evaluated here is the temperature influence of this setup, but as diode leakage currents increase with temperature, it is expected to introduce temperature-dependent errors. 
+
+Unfortunately, updating all devices in operation with this \ac{ovp} is not an option. The \ac{ovp} needs to be connected in series between the input terminal and the non-inverting \ac{opamp} input. On the existing \ac{pAM} boards, this is not possible. The setup of a new revision is necessary.
