@@ -1,0 +1,44 @@
+\definecolor{bonnblue}{HTML}{0d57a9}
+\beamertemplatenavigationsymbolsempty
+\RequirePackage{anyfontsize}
+\geometry{margin=0.3cm}
+\geometry{top=0cm}
+
+\setbeamertemplate{title page}{
+	\nointerlineskip
+	%\vspace*{-15mm}
+%	\begin{beamercolorbox}[ht=0.1\paperheight,wd=\paperwidth]{frametitle}
+%		\raisebox{0mm}{\includegraphics[width=0.1\paperwidth]{UniBonnkompakt.pdf}}
+%		\raisebox{-0.5mm}{\includegraphics[width=0.095\paperwidth]{HISKP_logo.jpg}}
+%		\raisebox{-0.5mm}{\includegraphics[width=0.095\paperwidth]{Logo_AGKetzer.png}}
+%		\hfill
+%	\end{beamercolorbox}
+	\vspace{2cm}
+	\begin{flushright}
+		\textcolor{bonnblue}{\huge\bf\inserttitle}\par
+		\textcolor{bonnblue}{\Large\bf\insertsubtitle}\par
+		\vspace*{5mm}
+		\textcolor{bonnblue}{\large\bf\insertauthor}\par
+		\vspace*{2mm}
+		\textcolor{bonnblue}{\large\bf\insertdate}\par
+	\end{flushright}
+}
+
+
+
+
+\setbeamertemplate{frametitle}
+{	
+	\nointerlineskip
+	\vspace*{-2mm}
+	\begin{beamercolorbox}[ht=0.1\paperheight,wd=\paperwidth]{frametitle}
+		\raisebox{-2mm}{\includegraphics[height=0.1\paperheight]{beamertitle.pdf}}
+%		\raisebox{-2mm}{\includegraphics[height=0.1\paperheight]{UniBonnkompakt.pdf}}
+%		\raisebox{-2.5mm}{\includegraphics[height=0.1\paperheight]{HISKP_logo.jpg}}
+%		\raisebox{-2.5mm}{\includegraphics[height=0.1\paperheight]{Logo_AGKetzer.png}}
+		\hfill
+		\raisebox{-1.5mm}{\strut\huge\bf\textcolor{bonnblue}{\fontsize{15}{18}\insertframetitle}\strut\hspace*{0.5cm}}
+	\end{beamercolorbox}
+}
+
+\setbeamertemplate{footline}[frame number]

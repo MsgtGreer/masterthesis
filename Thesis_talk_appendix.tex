@@ -1,0 +1,232 @@
+% !TeX program = pdflatex
+% !TeX spellcheck = en_GB
+% !TeX TXS-program:bibliography = txs:///bibtex
+\documentclass[t]{beamer}
+\usepackage{Greer}
+\usetheme{UniBonn}
+\title{Appendix}
+\author{Florian Rössing}
+\date{June 9, 2020}
+\graphicspath{{../Figures/}}
+\bibliographystyle{plain}
+\usepackage{siunitx}
+\usepackage{subfigure}
+\usepackage{tikz}
+%\usepackage{ubonn-biblatex}
+\begin{document}
+\begin{frame}{\color{white}{.} }
+\maketitle
+\end{frame}
+
+\begin{frame}[c]{Guarding}
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{theory/precisiontechniques/guarding/Guard2D.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}[c]{Firmware Workflow I}
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{pAMworkflow/old/mainloop/mainloop.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Firmware Workflow II}
+	\centering
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{pAMworkflow/new/initialization/initilization.pdf}
+		%\caption{New initialisation routine for a picoamperemeter.}
+	\end{figure}
+	\vspace{-0.5cm}
+	\begin{table}
+		\begin{tabular}{lr}
+			\hline
+			Parameter & \\\hline
+			DestAddress & Address of the receiver station\\
+			dataFormat	& Select between ADC raw values or their mean\\
+			delay       & Adds a delay to adjust the readout rate\\\hline
+		\end{tabular}
+	\end{table}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{Calibration Setup}
+		\begin{figure}
+		\includegraphics[width=0.9\textwidth]{calibrationsetup/calibrationsetup.pdf}
+		%\caption{setup for calibration,\cite{roedel}}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{Firmware Workflow New}
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{pAMworkflow/new/mainloop/mainloop.pdf}
+		%\caption{main loop of a pAMeter}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{Temperature}
+	\begin{table}
+		\centering
+		\begin{tabular}{llc}
+			\hline				
+			Component & Parameter & \multicolumn{1}{c}{Fluctuation} \\
+			& & in the range of \SI{15} to \SI{30}{\degreeCelsius} \\\hline
+			\multirow{2}{*}{ADA4530 \cite{ADA4530}}& Offset voltage  & \SI{\pm5}{\micro\volt} \\
+			& Input bias current & \SI{\pm0.1}{\femto\ampere} \\
+			\multirow{2}{*}{LTC2327 \cite{LTC2327}} & Non-Linearity  &\SI{\leq 1}{LSB}\\
+			& Full-Scale Error&  \SI{\pm2}{LSB} \\
+			& Offset Error & \SI{<<1}{}LSB\\
+			Feedback resistor  &Temperature Drift &  \SI{0.3}{\percent} \\
+			\hline 	
+			%\vfill
+		\end{tabular}	%\label{fig:pcb:backend}
+		%\caption{Temperature dependencies of components in the front-end.}
+		\label{tab:tempdep}
+	\end{table}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{Prototype Duty-cycle}
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{PCandDC/symAC_release.pdf}
+		%\caption{Timing characteristic of a picoamperemeter.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{ADA4530 I}
+	\begin{figure}
+	\includegraphics[width=0.6\textwidth]{../figures/ada4530/driftvstemperatur.png}
+	%\caption{Offset voltage drift vs Temperature. From \cite{ADA4530}.}
+\end{figure}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{ADA4530 II}
+	\begin{figure}
+		\includegraphics[width=0.6\textwidth]{../figures/ada4530/driftvstime.png}
+		%\caption{Offset voltage drift over time. From \cite{ADA4530}.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{Cleaning}
+	\begin{enumerate}
+		\item Ultrasonic cleaning in isopropyl alcohol for \SI{30}{\minute}
+		\item flushing the board with isopropyl 
+		\item use a brush scrub the solder joints 
+		\item blow dry using compressed air
+		\item solder relays in place
+		\item repeat step 2, 3 \& 4
+		\item bake the board at \SI{80}{\degreeCelsius} for \SI{3}{\hour}
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{TIA OVP}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\textwidth]{../figures/TIA/TIAsketchwOVP.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{TIA Model}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\textwidth]{../simulations/TIA/tia_completeNOISE/LTSPICEmodel.png}
+		%\caption{Model as implemented in LTspice for simulating the behaviour of the input stage.The Resistors R2 and R3 are the current limiters for the OVP setup. Models for the BC546B are implemented in the transistors Q1 and Q2. C1 and R1 allow to adjust shunt capacitance and resistance. C2 and R4 allow adjustment of the feedback impedance. For the ADA4530 a model is provided by Analog Devices.}
+		\label{fig:tia:ltspicemodel}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{AC Simulation}
+	\centering
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth,page=1]{../simulations/TIA/tia_completeAC/symAC_release.pdf}
+		%\caption{ Different values of R$_\text{F}$.}
+		\label{fig:tia:frequency:RF}
+	\end{figure}\hfill
+\end{frame}\begin{frame}[c,noframenumbering]{AC Simulation}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth,page=2]{../simulations/TIA/tia_completeAC/symAC_release.pdf}
+		%\caption{Different shunt capacitances.}
+		\label{fig:tia:frequency:CS}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{AC Simulation}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth,page=3]{../simulations/TIA/tia_completeAC/symAC_release.pdf}
+		%\caption{Different feedback capacitances.}
+		\label{fig:tia:frequency:CF}	
+			%\caption{The effect of different parameters on the frequency behaviour of the TIA model. The y-axis shows the signal amplitude in \SI{}{\dB}. The current source is adjusted to achieve \SI{1}{\volt} DC output at $R_\text{F}=$\SI{5}{\giga\ohm}.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{Noise Simulation}
+	\centering
+	\begin{figure}
+		\includegraphics[width=\textwidth,page=1]{../simulations/TIA/tia_completeNOISE/NoiseAnalysis.pdf}
+		%\caption{Different feedback resistors.}
+		\label{fig:tia:noise:RF}
+	\end{figure}\hfill
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{Noise Simulation}
+	\begin{figure}
+		\includegraphics[width=\textwidth,page=2]{../simulations/TIA/tia_completeNOISE/NoiseAnalysis.pdf}
+		%\caption{Different shunt capacities for R$_\text{F}=$\SI{10}{\giga\ohm}.}
+		\label{fig:tia:noise:CS}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{Noise Simulation}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth,page=3]{../simulations/TIA/tia_completeNOISE/NoiseAnalysis.pdf}
+		%\caption{Different feedback capacities for a shunt capacity of \SI{10}{\pico\farad}.}
+		\label{fig:tia:noise:CF}	
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Noise}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth,page=1]{../simulations/TIA/tia_completeNOISE/NOISEdependencies.pdf}
+	%\caption{Noise scaling with the shunt capacitance. To allow comparison the ADC LSB voltage denotes the voltage corresponding to one ADC channel.}
+	\label{fig:tia:noise:dep}
+	%%\caption{The effect of different parameters on the spectral noise density. V$_\text{noise}$ denotes the integrated rms noise}
+\end{figure}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{Prototype Front-End}
+\begin{figure}
+	\includegraphics[width=0.8\textwidth,page=1]{../figures/PCBprototype/JOB1.pdf}
+\end{figure}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{Prototype Front-End}
+\begin{figure}
+	\includegraphics[width=0.9\textwidth,page=2]{../figures/PCBprototype/JOB1.pdf}
+\end{figure}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{Bibliography}
+	\bibliography{bib}	
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

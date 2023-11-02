@@ -1,0 +1,453 @@
+% !TeX program = pdflatex
+% !TeX spellcheck = en_GB
+% !TeX TXS-program:bibliography = txs:///bibtex
+\documentclass[t]{beamer}
+\usepackage{Greer}
+\usetheme{UniBonn}
+\title{Development of a new Revision for floating, high voltage Picoamperemeters}
+\author{Florian Rössing}
+\date{June 9, 2020}
+\graphicspath{{../Figures/}}
+\bibliographystyle{plain}
+\usepackage{siunitx}
+\usepackage{subfigure}
+\usepackage{tikz}
+%\usepackage{ubonn-biblatex}
+\begin{document}
+\begin{frame}{\color{white}{.} }
+\maketitle
+\end{frame}
+
+\begin{frame}[c]{GEM-foil I}
+	\centering
+	\begin{figure}
+		\includegraphics[width=\textwidth]{/GEMsketch/GEMpic.pdf}
+		\caption{Photograph of a GEM-foil. From \cite{sauligas}.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{GEM-foil II}
+	\centering
+	\begin{figure}
+		\includegraphics[width=\textwidth]{/GEMsketch/GEMamplification.pdf}
+		\caption{GEM-foil amplification. From \cite{gemamplification}.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Operation}
+\centering
+\begin{figure}
+	\includegraphics[width=0.7\textwidth]{pAMconnection/pAMconnection.png}
+%\caption{GEM stack detector with attached picoamperemeter. From \cite{roedel}, modified.}
+\end{figure}
+%Old pameters sketch
+\end{frame}
+
+\begin{frame}[c]{Basic Principle}
+		\centering
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{pAMprinciple/pAMprinciple2.pdf}
+		\caption{Picoamperemeter basic principle. From \cite{roedel}, modified.}
+	\end{figure}
+%Old pameters sketch
+\end{frame}
+\begin{frame}[c,noframenumbering]{A picoamperemeter}
+	\centering
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{pAMprinciple/pAMpic.pdf}
+		\caption{Picoamperemeter revision 3. From \cite{rudolph}.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Design Characteristics}
+		\begin{table}
+		\begin{tabular}{lc}
+			\hline
+			Measurement Range & $\pm$\SI{16.4}{\milli\ampere} to $\pm$\SI{16.4}{\nano\ampere}  \\ 
+			Lowest Possible Resolution & \SI{0.625}{\pico\ampere}  \\ 
+			Achieved Resolution & $\approx$ \SI{1}{\pico\ampere}\\
+			Readout Frequency& $\approx$\SI{0.125}{\hertz}  \\ 
+			Power Consumption& $\approx$\SI{2}{\milli\ampere} \\ 
+			\hline
+		\end{tabular} 
+	\end{table}
+\end{frame}
+
+\begin{frame}[c]{Issues of the Design}
+$\left.
+\begin{tabular}{p{.49\textwidth}}
+\begin{itemize}
+\item Firmware only compiles on older machines
+\item Re-flashing firmware for receiver change necessary
+\end{itemize}
+\end{tabular}
+\right\}$ Software related
+$\left.
+\begin{tabular}{p{.49\textwidth}}
+\begin{itemize}
+\item Non-linear behaviour
+\item Temperature dependence
+\item Amplifier breaks down due to over-voltage
+\item Slow readout, ca \SI{0.125}{\hertz}
+\end{itemize}
+\end{tabular}
+\right\}$ Hardware related
+\end{frame}
+
+%\begin{frame}[c]{Software}
+%What was done?
+%\begin{itemize}
+%	\item wrote a new firmware
+%	\begin{itemize}
+%		\item compatible with modern compiler
+%		\item allows 2-way communication
+%	\end{itemize}
+%	\item adapted readout software 
+%	\item wrote new data analysis script for calibration 
+%\end{itemize}
+%\end{frame}
+\begin{frame}[c]{Calibration}
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{../figures/calibrationsetup/principle.pdf}
+		%\caption{Principle of the Calibration }
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Calibration Result I}
+	\begin{figure}
+		\includegraphics[width=0.85\textwidth]{pAMOld/Measurements/cal_stat16_rmode3_rand_temp_2017-01-16_10.33_plot.pdf}
+		%\caption{Calibration result for the most sensitive mode.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Calibration Result II}
+	\begin{figure}
+		\includegraphics[width=0.85\textwidth]{pAMOld/Measurements/cal_stat16_rmode0_rand_temp_2017-01-18_00.34_plot.pdf}
+		%\caption{Calibration result for the least sensitive mode.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Measurement Circuit}
+	\begin{figure}
+		\includegraphics[width=0.8\textwidth]{shuntamp_sketch/frontendsketchwOVP1.pdf}
+	\end{figure}
+	\begin{align}
+	U_\text{ADC}=R_\text{shunt}I+U_\text{ref}
+	\end{align}
+\end{frame}
+
+\begin{frame}[c]{Measurement Circuit}
+	\begin{figure}
+		\includegraphics[width=0.8\textwidth]{shuntamp_sketch/frontendsketchwOVP2.pdf}
+	\end{figure}
+	\begin{align}
+	U_\text{ADC}=1.25\cdot R_\text{shunt}I+U_\text{ref}
+	\end{align}
+\end{frame}
+
+\begin{frame}[c]{Diodes Removed}
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{example_pAmeter_old/old_no_ovp.pdf}
+		%\caption{Calibration measurement with all front-end diodes removed.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Measurement Circuit}
+	\begin{figure}
+		\includegraphics[width=0.8\textwidth]{shuntamp_sketch/frontendsketchwOVP2.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Improved OVP}
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{pAMoldfrontend/pAMold_frontend_ovp_improved.pdf}
+		%\caption{Pico amperemeter analog with improved ovp}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Transistor as Diode I}
+	\begin{figure}
+		\includegraphics[width=0.35\textwidth]{TransistorAsDiode/transistorasdiode.pdf}
+		%\caption{A common transistor as a diode,\cite{elektrokompendium}}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Transistor as Diode II}
+	\begin{figure}
+		\includegraphics[width=0.8\textwidth]{Diode_leakage_currents/DiodeLkg/diodeleakage.pdf}
+		%\caption{Backward leakage current of different diodes}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Improved OVP}
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{example_pAmeter_old/old_ovp_improved.pdf}
+		%\caption{calibration measurement with improved ovp}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{New Front-end}
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{TIA/TIAsketch.pdf}
+		%%\caption{A new frontend idea}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Component Choice}
+Op-Amp: 
+ADA4530:
+\begin{itemize}
+	\item \SI{20}{\femto\ampere} input bias current
+	\item Specially desigend for TIA
+	\item Offers guard ring buffer
+\end{itemize}
+ADC:
+LTC2327
+\begin{itemize}
+	\item True bipolar 
+	\item Low Error, low non-linearity
+	\item Fast: 500 ksps
+\end{itemize}
+%Temperature sensor:
+
+\end{frame}
+
+\begin{frame}[c]{Prototype Layout}
+	\begin{figure}
+	\includegraphics[width=\textwidth]{PCBprototype/PCBprototype1.pdf}
+	%\caption{Layout of the prototype board.}
+\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Measurements}
+	\centering
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.85\textwidth,page=1]{../figures/pAMnewmeasurements/NewPloting/stat2/stat2_rmode2_2020-03-09_09-41.pdf}
+		%%\caption{Calibration measurement done with the developed prototype. The obtained resolution is estimated to be \SI{0.67}{\pico\ampere}.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]{Measurements}
+	\begin{figure}
+			\includegraphics[width=\textwidth,page=2]{../figures/pAMnewmeasurements/NewPloting/stat2/stat2_rmode2_2020-03-09_09-41.pdf}
+	\end{figure}
+\end{frame}
+\begin{frame}[c]{Measurements}
+	\begin{figure}
+		\includegraphics[width=\textwidth,page=3]{../figures/pAMnewmeasurements/NewPloting/stat2/stat2_rmode2_2020-03-09_09-41.pdf}
+	\end{figure}
+\end{frame}
+\begin{frame}[c]{Measurements}
+\begin{figure} 
+	\centering
+	\includegraphics[width=0.85\textwidth,page=1]{../figures/pAMnewmeasurements/NewPloting/stat2/stat2_rmode2_2020-03-10_14-28.pdf}
+\end{figure}
+\end{frame}
+\begin{frame}[c]{Measurements}
+\begin{figure} 
+	\centering
+	\includegraphics[width=0.85\textwidth,page=3]{../figures/pAMnewmeasurements/NewPloting/stat2/stat2_rmode2_2020-03-12_17-40.pdf}
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}[c]{Characteristics}
+				\begin{table}
+	\begin{tabular}{lc}
+		\hline
+		Measurement Range & $\pm$\SI{50}{\nano\ampere} to $\pm$\SI{500}{\pico\ampere}  \\ 
+		Lowest Possible Resolution & \SI{19}{\femto\ampere}  \\ 
+		Achieved Resolution & $\approx$ \SI{40}{\femto\ampere}\\
+		Bandwidth			& $\approx$\SI{20}{\hertz}  \\ 
+		Readout Frequency& $\approx$\SI{7}{\hertz}  \\ 
+		Power Consumption& $\approx$\SI{11}{\milli\ampere} \\ 
+	\hline
+	\end{tabular} 
+\end{table}
+\end{frame}
+
+\begin{frame}[c,noframenumbering]{Bibliography}
+\bibliography{bib}	
+\end{frame}
+
+
+
+%
+%\begin{frame}[c,noframenumbering]{Calibration Setup}
+%		\begin{figure}
+%		\includegraphics[width=0.9\textwidth]{calibrationsetup/calibrationsetup.pdf}
+%		%\caption{setup for calibration,\cite{roedel}}
+%	\end{figure}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{Firmware Workflow New}
+%	\begin{figure}
+%		\includegraphics[width=0.7\textwidth]{pAMworkflow/new/mainloop/mainloop.pdf}
+%		%\caption{main loop of a pAMeter}
+%	\end{figure}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{Temperature}
+%	\begin{table}
+%		\centering
+%		\begin{tabular}{llc}
+%			\hline				
+%			Component & Parameter & \multicolumn{1}{c}{Fluctuation} \\
+%			& & in the range of \SI{15} to \SI{30}{\degreeCelsius} \\\hline
+%			\multirow{2}{*}{ADA4530 \cite{ADA4530}}& Offset voltage  & \SI{\pm5}{\micro\volt} \\
+%			& Input bias current & \SI{\pm0.1}{\femto\ampere} \\
+%			\multirow{2}{*}{LTC2327 \cite{LTC2327}} & Non-Linearity  &\SI{\leq 1}{LSB}\\
+%			& Full-Scale Error&  \SI{\pm2}{LSB} \\
+%			& Offset Error & \SI{<<1}{}LSB\\
+%			Feedback resistor  &Temperature Drift &  \SI{0.3}{\percent} \\
+%			\hline 	
+%			%\vfill
+%		\end{tabular}	%\label{fig:pcb:backend}
+%		%\caption{Temperature dependencies of components in the front-end.}
+%		\label{tab:tempdep}
+%	\end{table}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{Prototype Duty-cycle}
+%	\begin{figure}
+%		\includegraphics[width=0.7\textwidth]{PCandDC/symAC_release.pdf}
+%		%\caption{Timing characteristic of a picoamperemeter.}
+%	\end{figure}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{ADA4530 I}
+%	\begin{figure}
+%	\includegraphics[width=0.6\textwidth]{../figures/ada4530/driftvstemperatur.png}
+%	%\caption{Offset voltage drift vs Temperature. From \cite{ADA4530}.}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{ADA4530 II}
+%	\begin{figure}
+%		\includegraphics[width=0.6\textwidth]{../figures/ada4530/driftvstime.png}
+%		%\caption{Offset voltage drift over time. From \cite{ADA4530}.}
+%	\end{figure}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{Cleaning}
+%	\begin{enumerate}
+%		\item Ultrasonic cleaning in isopropyl alcohol for \SI{30}{\minute}
+%		\item flushing the board with isopropyl 
+%		\item use a brush scrub the solder joints 
+%		\item blow dry using compressed air
+%		\item solder relays in place
+%		\item repeat step 2, 3 \& 4
+%		\item bake the board at \SI{80}{\degreeCelsius} for \SI{3}{\hour}
+%	\end{enumerate}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{TIA OVP}
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.8\textwidth]{../figures/TIA/TIAsketchwOVP.pdf}
+%	\end{figure}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{TIA Model}
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.8\textwidth]{../simulations/TIA/tia_completeNOISE/LTSPICEmodel.png}
+%		%\caption{Model as implemented in LTspice for simulating the behaviour of the input stage.The Resistors R2 and R3 are the current limiters for the OVP setup. Models for the BC546B are implemented in the transistors Q1 and Q2. C1 and R1 allow to adjust shunt capacitance and resistance. C2 and R4 allow adjustment of the feedback impedance. For the ADA4530 a model is provided by Analog Devices.}
+%		\label{fig:tia:ltspicemodel}
+%	\end{figure}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{AC Simulation}
+%	\centering
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=\textwidth,page=1]{../simulations/TIA/tia_completeAC/symAC_release.pdf}
+%		%\caption{ Different values of R$_\text{F}$.}
+%		\label{fig:tia:frequency:RF}
+%	\end{figure}\hfill
+%\end{frame}\begin{frame}[c,noframenumbering]{AC Simulation}
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=\textwidth,page=2]{../simulations/TIA/tia_completeAC/symAC_release.pdf}
+%		%\caption{Different shunt capacitances.}
+%		\label{fig:tia:frequency:CS}
+%	\end{figure}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{AC Simulation}
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=\textwidth,page=3]{../simulations/TIA/tia_completeAC/symAC_release.pdf}
+%		%\caption{Different feedback capacitances.}
+%		\label{fig:tia:frequency:CF}	
+%			%\caption{The effect of different parameters on the frequency behaviour of the TIA model. The y-axis shows the signal amplitude in \SI{}{\dB}. The current source is adjusted to achieve \SI{1}{\volt} DC output at $R_\text{F}=$\SI{5}{\giga\ohm}.}
+%	\end{figure}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{Noise Simulation}
+%	\centering
+%	\begin{figure}
+%		\includegraphics[width=\textwidth,page=1]{../simulations/TIA/tia_completeNOISE/NoiseAnalysis.pdf}
+%		%\caption{Different feedback resistors.}
+%		\label{fig:tia:noise:RF}
+%	\end{figure}\hfill
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{Noise Simulation}
+%	\begin{figure}
+%		\includegraphics[width=\textwidth,page=2]{../simulations/TIA/tia_completeNOISE/NoiseAnalysis.pdf}
+%		%\caption{Different shunt capacities for R$_\text{F}=$\SI{10}{\giga\ohm}.}
+%		\label{fig:tia:noise:CS}
+%	\end{figure}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{Noise Simulation}
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=\textwidth,page=3]{../simulations/TIA/tia_completeNOISE/NoiseAnalysis.pdf}
+%		%\caption{Different feedback capacities for a shunt capacity of \SI{10}{\pico\farad}.}
+%		\label{fig:tia:noise:CF}	
+%	\end{figure}
+%\end{frame}
+%
+%\begin{frame}[c]{Noise}
+%\begin{figure}
+%	\centering
+%	\includegraphics[width=0.8\textwidth,page=1]{../simulations/TIA/tia_completeNOISE/NOISEdependencies.pdf}
+%	%\caption{Noise scaling with the shunt capacitance. To allow comparison the ADC LSB voltage denotes the voltage corresponding to one ADC channel.}
+%	\label{fig:tia:noise:dep}
+%	%%\caption{The effect of different parameters on the spectral noise density. V$_\text{noise}$ denotes the integrated rms noise}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{Prototype Front-End}
+%\begin{figure}
+%	\includegraphics[width=0.8\textwidth,page=1]{../figures/PCBprototype/JOB1.pdf}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}[c,noframenumbering]{Prototype Front-End}
+%\begin{figure}
+%	\includegraphics[width=0.9\textwidth,page=2]{../figures/PCBprototype/JOB1.pdf}
+%\end{figure}
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
